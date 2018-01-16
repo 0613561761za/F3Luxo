@@ -27,9 +27,9 @@ fi
 vps="aneka";
 
 if [[ $vps = "zvur" ]]; then
-	source="https://github.com/EraHitam/F3Luxo/tree/master"
+	source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master"
 else
-	source="https://github.com/EraHitam/F3Luxo/tree/master/For7_only"
+	source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master/For7_only"
 fi
 
 clear      
