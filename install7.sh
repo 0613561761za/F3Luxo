@@ -37,7 +37,7 @@ echo ""
 echo -e "\e[38;5;226m   AUTOSCRIPT VPS/@orangkuatsabahanterkini 2018       "
 echo -e "\e[38;5;6m  ===================================================================="
 echo -e "\e[38;5;226m *            TELEGRAM  :  https://t.me/orangkuatsabahanterkini     *"
-echo -e "\e[38;5;6m  *               GROUP  :   https://                                *"
+echo -e "\e[38;5;200m  *               GROUP  :   https://                                *"
 echo -e "\e[38;5;226m *             CHANNEL  : @NewPremiumService                        *"
 echo -e "\e[38;5;6m  ===================================================================="
 echo -e "\e[38;5;226m *                    AUTOSCRIPT VPS 2018                            *"
@@ -313,53 +313,11 @@ cd ddos-deflate-master
 ./install.sh
 cd
 
-# download script
+# Install Menu
 cd
-wget -O /usr/bin/benchmark $source/benchmark.sh
-wget -O /usr/bin/speedtest $source/speedtest.py
-wget -O /usr/bin/ps_mem $source/ps_mem.py
-wget -O /etc/issue.net $source/banner
-wget -O /usr/bin/dropmon $source/dropmon.sh
-wget -O /usr/bin/menu $source/menu.sh
-wget -O /usr/bin/user-add $source/user-add.sh
-wget -O /usr/bin/user-add-vpn $source/user-add-vpn.sh
-wget -O /usr/bin/user-add-pptp $source/user-add-pptp.sh
-wget -O /usr/bin/user-expire $source/user-expire.sh
-wget -O /usr/bin/user-gen $source/user-gen.sh
-wget -O /usr/bin/user-limit $source/user-limit.sh
-wget -O /usr/bin/user-list $source/user-list.sh
-wget -O /usr/bin/user-login $source/user-login.sh
-wget -O /usr/bin/user-active-list $source/user-active-list.sh
-wget -O /usr/bin/user-renew $source/user-renew.sh
-wget -O /usr/bin/user-del $source/user-del.sh
-wget -O /usr/bin/user-pass $source/user-pass.sh
-wget -O /usr/bin/user-expire-list $source/user-expire-list.sh
-wget -O /usr/bin/user-banned $source/user-banned.sh
-wget -O /usr/bin/unbanned-user $source/unbanned-user.sh
-wget -O /usr/bin/delete-user-expire $source/delete-user-expire.sh
-echo "0 0 * * * root /usr/bin/user-expire" > /etc/cron.d/user-expire
-echo "* * * * * service dropbear restart" > /etc/cron.d/dropbear
-chmod +x /usr/bin/benchmark
-chmod +x /usr/bin/speedtest
-chmod +x /usr/bin/ps_mem
-chmod +x /usr/bin/dropmon
-chmod +x /usr/bin/menu
-chmod +x /usr/bin/user-add
-chmod +x /usr/bin/user-add-vpn
-chmod +x /usr/bin/user-add-pptp
-chmod +x /usr/bin/user-expire
-chmod +x /usr/bin/user-gen
-chmod +x /usr/bin/user-limit
-chmod +x /usr/bin/user-list
-chmod +x /usr/bin/user-login
-chmod +x /usr/bin/user-active-list
-chmod +x /usr/bin/user-renew
-chmod +x /usr/bin/user-del
-chmod +x /usr/bin/user-pass
-chmod +x /usr/bin/user-expire-list
-chmod +x /usr/bin/user-banned
-chmod +x /usr/bin/unbanned-user
-chmod +x /usr/bin/delete-user-expire
+wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/m3nu/menu
+mv ./menu /usr/local/bin/menu
+chmod +x /usr/local/bin/menu
 
 # finishing
 chown -R www-data:www-data /home/vps/public_html
@@ -396,21 +354,21 @@ red='\e[1;31m'
 cd
 ## info
 echo ""  | tee -a log-install.txt
-echo -e "\e[38;5;226m--------------------------- Penjelasan Setup Server ----------------------------"
-echo -e "\e[38;5;9m                         Copyright orangkuatsabahanterkini                " 
-echo -e "\e[38;5;9m                        https://t.me/orangkuatsabahanterkini              " 
-echo -e "\e[38;5;226m--------------------------------------------------------------------------------" 
+echo -e "\e[38;5;197m--------------------------- Penjelasan Setup Server ----------------------------\e[0m" 
+echo -e "\e[38;5;9m                         Copyright orangkuatsabahanterkini                \e[0m" 
+echo -e "\e[38;5;9m                        https://t.me/orangkuatsabahanterkini              \e[0m"  
+echo -e "\e[38;5;197m--------------------------------------------------------------------------------\e[0m" 
 echo "========================================"  | tee -a log-install.txt
 echo "Service Autoscript OrangKuatSabahanTerkini (OrangKuatSabahanTerkini SCRIPT 2017)"  | tee -a log-install.txt
 echo "----------------------------------------"  | tee -a log-install.txt 
 echo ""  | tee -a log-install.txt
-echo "nginx : http://$myip:80"   | tee -a log-install.txt 
-echo "Webmin : http://$myip:10000/"  | tee -a log-install.txt 
-echo "Squid3 : 8080"  | tee -a log-install.txt 
-echo "OpenSSH : 22"  | tee -a log-install.txt
-echo "Dropbear : 109'110'442"  | tee -a log-install.txt
-echo "SSL : 443"  | tee -a log-install.txt 
-echo "OpenVPN  : IP/client.ovpn"  | tee -a log-install.txt
+echo -e "\e[38;5;82mnginx : http://$myip:80\e[0m"   | tee -a log-install.txt 
+echo -e "\e[38;5;82mWebmin : http://$myip:10000/\e[0m"  | tee -a log-install.txt 
+echo -e "\e[38;5;82mSquid3 : 8080\e[0m" | tee -a log-install.txt 
+echo -e "\e[38;5;82mOpenSSH : 22\e[0m"  | tee -a log-install.txt
+echo -e "\e[38;5;82mDropbear : 109'110'442\e[0m"  | tee -a log-install.txt
+echo -e "\e[38;5;82mSSL : 443\e[0m" | tee -a log-install.txt 
+echo -e "\e[38;5;82mOpenVPN  : IP/client.ovpn\e[0m"  | tee -a log-install.txt
 echo "Fail2Ban : [on]"  | tee -a log-install.txt 
 echo "Timezone : Asia/Kuala_Lumpur"  | tee -a log-install.txt 
 echo "Menu : type menu to check menu script"  | tee -a log-install.txt 
