@@ -32,7 +32,7 @@ vps="aneka";
 if [[ $vps = "zvur" ]]; then
 	source="https://github.com/EraHitam/F3Luxo/tree/master"
 else
-	source="https://github.com/EraHitam/F3Luxo/tree/master"
+	source="https://github.com/EraHitam/F3Luxo/tree/master/For8_9"
 fi
 
 clear      
@@ -139,7 +139,7 @@ sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 
 # dropbear
 apt-get -y install dropbear
-wget -O /etc/default/dropbear $source/For8_9/dropbear
+wget -O /etc/default/dropbear $source/dropbear
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells
 cd
@@ -154,10 +154,10 @@ cd
 cd
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -O /etc/nginx/nginx.conf $source/For8_9/vps.conf/nginx.conf
+wget -O /etc/nginx/nginx.conf $source/nginx.conf
 mkdir -p /home/vps/public_html
 echo "<pre>Welcome webserver MBAH SHONDONG Hawok Hawok Jozz</pre>" > /home/vps/public_html/index.html
-wget -O /etc/nginx/conf.d/vps.conf $source/For8_9/vps.conf/vps.conf
+wget -O /etc/nginx/conf.d/vps.conf $source/vps.conf
 sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
 service php5-fpm restart
 service nginx restart
@@ -165,15 +165,15 @@ service nginx restart
 # openvpn
 apt-get -y install openvpn
 cd /etc/openvpn/
-wget $source/For8_9/openvpn.tar;tar xf openvpn.tar;rm openvpn.tar
-wget -O /etc/iptables.up.rules $source/For8_9/iptables.up.rules
+wget $source/openvpn.tar;tar xf openvpn.tar;rm openvpn.tar
+wget -O /etc/iptables.up.rules $source/iptables.up.rules
 sed -i '$ i\iptables-restore < /etc/iptables.up.rules' /etc/rc.local
 sed -i "s/ipserver/$myip/g" /etc/iptables.up.rules
 iptables-restore < /etc/iptables.up.rules
 # etc
-wget -O /home/vps/public_html/client.ovpn $source/For8_9/client.ovpn
+wget -O /home/vps/public_html/client.ovpn $source/client.ovpn
 sed -i "s/ipserver/$myip/g" /home/vps/public_html/client.ovpn
-cd;wget $source/For8_9/cronjob.tar
+cd;wget $source/cronjob.tar
 tar xf cronjob.tar;mv uptime.php /home/vps/public_html/
 mv usertol userssh uservpn /usr/bin/;mv cronvpn cronssh /etc/cron.d/
 chmod +x /usr/bin/usertol;chmod +x /usr/bin/userssh;chmod +x /usr/bin/uservpn;
@@ -185,7 +185,7 @@ clear
 
 # Badvpn
 apt-get -y install cmake make gcc
-wget $source/For8_9/badvpn-1.999.127.tar.bz2
+wget $source/badvpn-1.999.127.tar.bz2
 tar xf badvpn-1.999.127.tar.bz2
 mkdir badvpn-build
 cd badvpn-build
@@ -196,7 +196,7 @@ cd
 
 # install vnstat gui
 cd /home/vps/public_html/
-wget $source/For8_9/vnstat_php_frontend-1.5.1.tar.gz
+wget $source/vnstat_php_frontend-1.5.1.tar.gz
 tar xf vnstat_php_frontend-1.5.1.tar.gz
 rm vnstat_php_frontend-1.5.1.tar.gz
 mv vnstat_php_frontend-1.5.1 vnstat
@@ -209,18 +209,18 @@ sed -i "s/\$locale = 'en_US.UTF-8';/\$locale = 'en_US.UTF+8';/g" config.php
 cd
 
 #swap ram
-wget $source/For8_9/swap-ram.sh
+wget $source/swap-ram.sh
 chmod +x swap-ram.sh
 ./swap-ram.sh
 
 #bonus block torrent
-wget $source/For8_9/torrent.sh
+wget $source/torrent.sh
 chmod +x torrent.sh
 ./torrent.sh
 
 # Install Dos Deflate
 apt-get -y install dnsutils dsniff
-wget $source/For8_9/ddos-deflate-master.zip
+wget $source/ddos-deflate-master.zip
 unzip master.zip
 cd ddos-deflate-master
 ./install.sh
@@ -297,7 +297,7 @@ cd
 apt-get update
 apt-get upgrade
 apt-get install stunnel4
-wget -O /etc/stunnel/stunnel.conf $source/For8_9/stunnel.conf
+wget -O /etc/stunnel/stunnel.conf $source/stunnel.conf
 openssl genrsa -out key.pem 2048
 openssl req -new -x509 -key key.pem -out cert.pem -days 1095
 cat key.pem cert.pem >> /etc/stunnel/stunnel.pem
