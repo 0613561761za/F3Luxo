@@ -63,7 +63,7 @@ cd
                green='\e[0;32m'
                NC='\e[0m'
 
-               echo -e "\e[38;5;82m Connecting to Autoscript CuCu_Atok..."
+               echo -e "\e[38;5;82m Connecting to Autoscript OrangKuatsab..."
 			   sleep 1
 
 			   echo -e "\e[38;5;11m Connecting to your ip : $myip ...."
