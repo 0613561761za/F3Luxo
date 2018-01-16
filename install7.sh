@@ -92,8 +92,8 @@ sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service ssh restart
 
 # set repo
-wget -O /etc/apt/sources.list $source/sources.list.debian7
-wget "http://www.dotdeb.org/dotdeb.gpg"
+wget -O /etc/apt/sources.list "https://raw.githubusercontent.com/GegeEmbrie/autosshvpn/master/file/sources.list.debian7.lokal"
+wget "https://raw.githubusercontent.com/GegeEmbrie/autosshvpn/master/file/dotdeb.gpg"
 wget "http://www.webmin.com/jcameron-key.asc"
 cat dotdeb.gpg | apt-key add -;rm dotdeb.gpg
 cat jcameron-key.asc | apt-key add -;rm jcameron-key.asc
@@ -167,15 +167,17 @@ curl -L "https://bintray.com/user/downloadSubjectPublicKey?username=bintray" -o 
 apt-get update
 apt-get install neofetch
 
-echo "clear" >> .bashrc
-echo 'echo -e "WELCOME GRETONGER $HOSTNAME"' >> .bashrc
-echo 'echo -e "Script By OrgKuatsabah"' >> .bashrc
-echo 'echo -e "Ketik menu untuk menampilkan daftar perintah"' >> .bashrc
-echo 'echo -e ""' >> .bashrc
+# text gambar
+apt-get install boxes
 
-# webmin
-apt-get -y install webmin
-sed -i 's/ssl=1/ssl=0/g' /etc/webmin/miniserv.conf
+# color text
+cd
+rm -rf /root/.bashrc
+wget -O /root/.bashrc $source/m3nu/.bashrc
+
+# install lolcat
+sudo apt-get -y install ruby
+sudo gem install lolcat
 
 # install webserver
 cd
@@ -256,6 +258,17 @@ echo "/usr/sbin/nologin" >> /etc/shells
 service ssh restart
 service dropbear restart
 
+# upgrade dropbear 2014
+apt-get install zlib1g-dev
+wget -q https://matt.ucc.asn.au/dropbear/releases/dropbear-2012.55.tar.bz2
+bzip2 -cd dropbear-2012.55.tar.bz2 | tar xvf -
+cd dropbear-2012.55
+./configure
+make && make install
+mv /usr/sbin/dropbear /usr/sbin/dropbear1
+ln /usr/local/sbin/dropbear /usr/sbin/dropbear
+service dropbear restart
+
 # install vnstat gui
 cd /home/vps/public_html/
 wget $source/vnstat_php_frontend-1.5.1.tar.gz
@@ -274,10 +287,7 @@ cd
 apt-get -y install fail2ban;service fail2ban restart;
 
 # install squid3
-apt-get -y install squid3
-wget -O /etc/squid3/squid.conf $source/squid3.conf
-sed -i $MYIP2 /etc/squid3/squid.conf;
-service squid3 restart
+wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/squid3.sh && chmod 100 squid3.sh && ./squid3.sh
 
 # install webmin
 cd
@@ -293,7 +303,6 @@ service vnstat restart
 wget $source/pptp.sh
 chmod +x pptp.sh
 ./pptp.sh
-
 
 #swap ram
 wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/For8_9/swap-ram.sh
@@ -313,11 +322,84 @@ cd ddos-deflate-master
 ./install.sh
 cd
 
-# Install Menu
+# install dos2unix
+apt-get install dos2unix
+ 
+wget -q https://github.com/ForNesiaFreak/FNS/raw/master/go/fornesia87.tgz
+tar xvfz fornesia87.tgz
+cd fornesia87
+make
+
+# download script
 cd
-wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/m3nu/menu
-mv ./menu /usr/local/bin/menu
-chmod +x /usr/local/bin/menu
+wget -O /usr/bin/motd $source/m3nu/motd
+wget -O /usr/bin/benchmark $source/m3nu/benchmark.sh
+wget -O /usr/bin/speedtest $source/m3nu/speedtest_cli.py
+wget -O /usr/bin/ps-mem $source/m3nu/ps_mem.py
+wget -O /usr/bin/dropmon $source/m3nu/dropmon.sh
+wget -O /usr/bin/menu $source/m3nu/menu.sh
+wget -O /usr/bin/user-active-list $source/m3nu/user-active-list.sh
+wget -O /usr/bin/user-add $source/m3nu/user-add.sh
+wget -O /usr/bin/user-add-pptp $source/m3nu/user-add-pptp.sh
+wget -O /usr/bin/user-del $source/m3nu/user-del.sh
+wget -O /usr/bin/disable-user-expire $source/m3nu/disable-user-expire.sh
+wget -O /usr/bin/delete-user-expire $source/m3nu/delete-user-expire.sh
+wget -O /usr/bin/banned-user $source/m3nu/banned-user.sh
+wget -O /usr/bin/unbanned-user $source/m3nu/unbanned-user.sh
+wget -O /usr/bin/user-expire-list $source/m3nu/user-expire-list.sh
+wget -O /usr/bin/user-gen $source/m3nu/user-gen.sh
+wget -O /usr/bin/userlimit.sh $source/m3nu/userlimit.sh
+wget -O /usr/bin/userlimitssh.sh $source/m3nu/userlimitssh.sh
+wget -O /usr/bin/user-list $source/m3nu/user-list.sh
+wget -O /usr/bin/user-login $source/m3nu/user-login.sh
+wget -O /usr/bin/user-pass $source/m3nu/user-pass.sh
+wget -O /usr/bin/user-renew $source/m3nu/user-renew.sh
+wget -O /usr/bin/clearcache.sh $source/m3nu/clearcache.sh
+wget -O /usr/bin/bannermenu $source/m3nu/bannermenu
+cd
+
+#rm -rf /etc/cron.weekly/
+#rm -rf /etc/cron.hourly/
+#rm -rf /etc/cron.monthly/
+rm -rf /etc/cron.daily/
+wget -O /root/passwd $source/m3nu/passwd.sh
+chmod +x /root/passwd
+echo "01 23 * * * root /root/passwd" > /etc/cron.d/passwd
+
+echo "*/30 * * * * root service dropbear restart" > /etc/cron.d/dropbear
+echo "00 23 * * * root /usr/bin/disable-user-expire" > /etc/cron.d/disable-user-expire
+echo "0 */12 * * * root /sbin/reboot" > /etc/cron.d/reboot
+#echo "00 01 * * * root echo 3 > /proc/sys/vm/drop_caches && swapoff -a && swapon -a" > /etc/cron.d/clearcacheram3swap
+echo "*/30 * * * * root /usr/bin/clearcache.sh" > /etc/cron.d/clearcache1
+
+cd
+chmod +x /usr/bin/motd
+chmod +x /usr/bin/benchmark
+chmod +x /usr/bin/speedtest
+chmod +x /usr/bin/ps-mem
+#chmod +x /usr/bin/autokill
+chmod +x /usr/bin/dropmon
+chmod +x /usr/bin/menu
+chmod +x /usr/bin/user-active-list
+chmod +x /usr/bin/user-add
+chmod +x /usr/bin/user-add-pptp
+chmod +x /usr/bin/user-del
+chmod +x /usr/bin/disable-user-expire
+chmod +x /usr/bin/delete-user-expire
+chmod +x /usr/bin/banned-user
+chmod +x /usr/bin/unbanned-user
+chmod +x /usr/bin/user-expire-list
+chmod +x /usr/bin/user-gen
+chmod +x /usr/bin/userlimit.sh
+chmod +x /usr/bin/userlimitssh.sh
+chmod +x /usr/bin/user-list
+chmod +x /usr/bin/user-login
+chmod +x /usr/bin/user-pass
+chmod +x /usr/bin/user-renew
+chmod +x /usr/bin/clearcache.sh
+chmod +x /usr/bin/bannermenu
+cd
+
 
 # finishing
 chown -R www-data:www-data /home/vps/public_html
