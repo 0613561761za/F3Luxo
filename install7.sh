@@ -27,7 +27,7 @@ fi
 vps="aneka";
 
 if [[ $vps = "zvur" ]]; then
-	source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master"
+	source=""
 else
 	source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master/For7_only"
 fi
@@ -183,9 +183,9 @@ sudo gem install lolcat
 cd
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/For8_9/nginx.conf"
+wget -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/cucuatok93/cucunenek/master/nginx.conf"
 mkdir -p /home/vps/public_html
-echo "<pre>Welcome webserver MBAH SHONDONG Hawok Hawok Jozz</pre>" > /home/vps/public_html/index.html
+echo "<pre>Welcome webserver Budak Budak Sabahan</pre>" > /home/vps/public_html/index.html
 wget -O /etc/nginx/conf.d/vps.conf "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/For8_9/vps.conf"
 sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
 service php5-fpm restart
@@ -212,15 +212,16 @@ echo "UPDATE AND INSTALL COMPLETE COMPLETE 99% BE PATIENT"
 rm $0;rm *.txt;rm *.tar;rm *.deb;rm *.asc;rm *.zip;rm ddos*;
 clear
 
+# Install BadVPN
+apt-get -y install cmake make gcc
+wget https://raw.githubusercontent.com/GegeEmbrie/autosshvpn/master/file/badvpn-1.999.127.tar.bz2
+tar xf badvpn-1.999.127.tar.bz2
+mkdir badvpn-build
+cd badvpn-build
+cmake ~/badvpn-1.999.127 -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_UDPGW=1
+make install
+screen badvpn-udpgw --listen-addr 127.0.0.1:7300 > /dev/null &
 cd
-# install badvpn
-wget -O /usr/bin/badvpn-udpgw $source/badvpn-udpgw
-if [ "$OS" == "x86_64" ]; then
-  wget -O /usr/bin/badvpn-udpgw $source/badvpn-udpgw64
-fi
-sed -i '$ i\screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300' /etc/rc.local
-chmod +x /usr/bin/badvpn-udpgw
-screen -AmdS badvpn badvpn-udpgw --listen-addr 127.0.0.1:7300
 
 # install mrtg
 #apt-get update;apt-get -y install snmpd;
@@ -328,7 +329,7 @@ wget -q https://github.com/ForNesiaFreak/FNS/raw/master/go/fornesia87.tgz
 tar xvfz fornesia87.tgz
 cd fornesia87
 make
-
+source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master"
 # download script
 cd
 wget -O /usr/bin/motd $source/m3nu/motd
