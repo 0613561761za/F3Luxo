@@ -58,17 +58,8 @@ UPDATE AND UPGRADE PROCESS
 
 PLEASE WAIT TAKE TIME 1-5 MINUTE
 "
-#installing webmin
-wget http://www.webmin.com/jcameron-key.asc
-apt-key add jcameron-key.asc
-echo "deb http://download.webmin.com/download/repository sarge contrib" >> /etc/apt/sources.list
-echo "deb http://webmin.mirror.somersettechsolutions.co.uk/repository sarge contrib" >> /etc/apt/sources.list
-apt-get update
-apt-get -y install webmin
-#disable webmin https
-sed -i "s/ssl=1/ssl=0/g" /etc/webmin/miniserv.conf
-/etc/init.d/webmin restart
-cd
+sh -c 'echo "deb http://download.webmin.com/download/repository sarge contrib" > /etc/apt/sources.list.d/webmin.list'
+wget -qO - http://www.webmin.com/jcameron-key.asc | apt-key add -
 apt-get update;
 apt-get -y upgrade;
 apt-get -y install wget curl;
@@ -77,40 +68,21 @@ INSTALLER PROCESS PLEASE WAIT
 
 TAKE TIME 5-10 MINUTE
 "
+#install menu
+wget https://raw.githubusercontent.com/zero9911/a/master/script/menu
+wget https://raw.githubusercontent.com/zero9911/a/master/script/user-list
+wget https://raw.githubusercontent.com/zero9911/a/master/script/monssh
+wget https://raw.githubusercontent.com/zero9911/a/master/script/status
+mv menu /usr/local/bin/
+mv user-list /usr/local/bin/
+mv monssh /usr/local/bin/
+mv status /usr/local/bin/
+chmod +x  /usr/local/bin/menu
+chmod +x  /usr/local/bin/user-list
+chmod +x  /usr/local/bin/monssh
+chmod +x  /usr/local/bin/status
+cd
 
-# command script
-wget -O /usr/bin/menu "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/mainMenu.sh"
-wget -O /usr/bin/01 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/trialUserAccount.sh"
-wget -O /usr/bin/02 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/genAccount.sh"
-wget -O /usr/bin/03 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/createUserAccount.sh"
-wget -O /usr/bin/04 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/renewUserAccount.sh"
-wget -O /usr/bin/05 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/changePasswordAccount.sh"
-wget -O /usr/bin/06 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/lockAccount.sh"
-wget -O /usr/bin/07 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/unlockAccount.sh"
-wget -O /usr/bin/08 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/deleteUserAccount.sh"
-wget -O /usr/bin/09 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/listAccounts.sh"
-wget -O /usr/bin/10 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/OnlineUserAccounts.sh"
-wget -O /usr/bin/11 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/monitorBandwidth.sh"
-wget -O /usr/bin/12 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/serverPerformanceMonitor.sh"
-wget -O /usr/bin/13 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/speedtest_cli.py"
-wget -O /usr/bin/14 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/DetailsServer.sh"
-wget -O /usr/bin/15 "https://raw.githubusercontent.com/zero9911/vps/master/bashScripts/servicesRestart.sh"
-
-chmod +x /usr/bin/menu
-chmod +x /usr/bin/01
-chmod +x /usr/bin/02
-chmod +x /usr/bin/03
-chmod +x /usr/bin/04
-chmod +x /usr/bin/05
-chmod +x /usr/bin/06
-chmod +x /usr/bin/07
-chmod +x /usr/bin/08
-chmod +x /usr/bin/09
-chmod +x /usr/bin/10
-chmod +x /usr/bin/11
-chmod +x /usr/bin/12
-chmod +x /usr/bin/13
-chmod +x /usr/bin/14
 
 # moth
 cd
@@ -123,6 +95,9 @@ wget https://github.com/jgmdev/ddos-deflate/archive/master.zip;unzip master.zip;
 cd ddos-deflate-master && ./install.sh
 service exim4 stop;sysv-rc-conf exim4 off;
 
+# webmin
+apt-get -y install webmin
+sed -i 's/ssl=1/ssl=0/g' /etc/webmin/miniserv.conf
 
 # ssh
 sed -i 's/#Banner/Banner/g' /etc/ssh/sshd_config
