@@ -155,25 +155,17 @@ wget -O /etc/squid3/squid.conf $source/For8_9/squid.conf"
 sed -i "s/ipserver/$myip/g" /etc/squid3/squid.conf
 cd
 
-# nginx
-apt-get install nginx php5 libapache2-mod-php5 php5-fpm php5-cli php5-mysql php5-mcrypt libxml-parser-perl -y
+# install webserver
+cd
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.old
-curl $source/For8_9/vps.conf/nginx.conf > /etc/nginx/nginx.conf
-curl $source/For8_9/vps.conf > /etc/nginx/conf.d/vps.conf
-sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
-useradd -m vps;
+wget -O /etc/nginx/nginx.conf $source/For8_9/vps.conf/nginx.conf
 mkdir -p /home/vps/public_html
-echo "<?php phpinfo() ?>" > /home/vps/public_html/info.php
-chown -R www-data:www-data /home/vps/public_html
-chmod -R g+rw /home/vps/public_html
-cd /home/vps/public_html
-wget -O /home/vps/public_html/uptime.php "http://autoscript.kepalatupai.com/uptime.php1"
-wget -O /home/vps/public_html/index.html "https://raw.githubusercontent.com/GegeEmbrie/autosshvpn/master/addons/index.html1"
+echo "<pre>Welcome webserver MBAH SHONDONG Hawok Hawok Jozz</pre>" > /home/vps/public_html/index.html
+wget -O /etc/nginx/conf.d/vps.conf $source/For8_9/vps.conf/vps.conf
+sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
 service php5-fpm restart
 service nginx restart
-cd
 
 # openvpn
 apt-get -y install openvpn
