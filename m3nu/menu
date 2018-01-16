@@ -221,16 +221,16 @@ echo "" | lolcat
 echo "" | lolcat
 echo "        ----[SELAMAT DATANG DI VPS MappakkoE  - ]---"| boxes -d dog | lolcat
 echo "        ====================================================="| lolcat
-echo "        #           WhatsApp     : +601131731782            #"| lolcat
-echo "        #           Telegram     : @MuLuu09                 #"| lolcat
-echo "        #           Facebook     : fb.com/mhd.Fazren        #"| lolcat
-echo "        #           InstaGram    : mhdfazren_               #"| lolcat
+echo "        #           WhatsApp   : +0109475453                #"| lolcat
+echo "        #           Telegram   : @OrangKuatSabahanterkini   #"| lolcat
+echo "        #           Facebook   : fb.com/                    #"| lolcat
+echo "        #           InstaGram  :                            #"| lolcat
 echo "        #                                                   #"| lolcat
-echo "        #         Copyright: © MuLuu09™ Premium 2017        #"| lolcat
+echo "        #         Copyright: © ™ Premium 2017               #"| lolcat
 echo "        ====================================================="| lolcat
 echo ""
 PS3='Silahkan ketik nomor pilihan anda lalu tekan ENTER: '
-options=("Buat User" "Buat User Trial" "Perbarui User" "Semua User" "Hapus User" "Monitor User Login" "Aktifkan Kill Multi Login" "Matikan Kill Multi Login" "User Belum Kadaluarsa" "User Sudah Kadaluarsa" "Restart Server" "Ganti Password User" "Ganti Password VPS" "Used Data By Users" "bench-network" "Ram Status" "Bersihkan cache ram" "Ganti Port OpenVPN" "Ganti Port Dropbear" "Ganti Port Openssh" "Ganti Port Squid3" "Speedtest" "Edit Banner Login" "Lihat Lokasi User" "Install openvpn" "Install ocspanel" "Edit Banner SSH" "Edit Banner Menu" "Change Password VPS" "Quit")
+options=("Create User" "Create Trial" "Renew User" "All User" "Delete User" "Monitor User Login" "Kill Multi Login[ON]" "Kill Multi Login[OFF]" "User Active" "User Expired" "Restart Server" "Change Password User" "Change Password VPS" "Used Data By Users" "bench-network" "Ram Status" "Clean cache ram" "Ganti Port OpenVPN" "Ganti Port Dropbear" "Ganti Port Openssh" "Ganti Port Squid3" "Speedtest" "Edit Banner Login" "Lihat Lokasi User" "Install openvpn" "Install ocspanel" "Edit Banner SSH" "Edit Banner Menu" "Change Password VPS" "Quit")
 select opt in "${options[@]}"
 do
     case $opt in
