@@ -43,7 +43,7 @@ echo -e "\e[38;5;6m  ===========================================================
 echo -e "\e[38;5;226m *                    AUTOSCRIPT VPS 2018                            *"
 echo -e "\e[38;5;6m  ===================================================================="
 # check registered ip
-wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/IP.txt"
+wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/c8399cca3bc6bfff01851c11ae79a082f0aaee82/IP.txt"
 wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/IP.txt"
 if ! grep -w -q $MYIP IP; then
 	echo "Maaf Bro Hanya IP terdaftar sahaja yang boleh menggunakan Autoscript ini" 
