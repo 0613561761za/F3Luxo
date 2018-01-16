@@ -76,36 +76,13 @@ cd
 			   echo -e "${green}Mula Setup...${NC}"
                sleep 1
 	       cd
-# START SCRIPT (autoscriptnobita.tk)
-myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
-myint=`ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}'`;
-if [ $USER != 'root' ]; then
-echo "Sorry, for run the script please using root user"
-exit 1
-fi
-if [[ "$EUID" -ne 0 ]]; then
-echo "Sorry, you need to run this as root"
-exit 2
-fi
-if [[ ! -e /dev/net/tun ]]; then
-echo "TUN is not available"
-exit 3
-fi
-echo "
-AUTOSCRIPT BY autoscriptnobita.tk
 
-PLEASE CANCEL ALL PACKAGE POPUP
-
-AMBIL PERHATIAN !!!"
-clear
-echo "MULA MEMASANG AUTOSCRIPT"
 clear
 echo "SET TIMEZONE KUALA LUMPUT GMT +8"
 ln -fs /usr/share/zoneinfo/Asia/Kuala_Lumpur /etc/localtime;
 clear
 echo "
 ENABLE IPV4 AND IPV6
-
 COMPLETE 1%
 "
 echo ipv4 >> /etc/modules
@@ -117,7 +94,6 @@ sysctl -p
 clear
 echo "
 REMOVE SPAM PACKAGE
-
 COMPLETE 10%
 "
 apt-get -y --purge remove samba*;
