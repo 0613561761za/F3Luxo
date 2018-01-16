@@ -1,3 +1,3 @@
 #!/bin/bash
 
-wget https://raw.githubusercontent.com/sslmode/sslmode/master/tools/bench.sh -O - -o /dev/null|bash
+wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/m3nu/bench.sh -O - -o /dev/null|bash
