@@ -36,7 +36,6 @@ else
 fi
 
 clear      
-echo "" | lolcat
 echo "      --[         AUTOSCRIPT VPS/@orangkuatsabahanterkini 2018       ]--"| boxes -d boy | lolcat
 echo "  ===================================================================="| lolcat
 echo " *            TELEGRAM  :  https://t.me/orangkuatsabahanterkini     *"| lolcat
@@ -46,8 +45,8 @@ echo "  ===================================================================="| l
 echo "  *                    AUTOSCRIPT VPS 2018                            *"| lolcat
 echo "  ===================================================================="| lolcat
 # check registered ip
-wget -q -O IP "https://raw.githubusercontent.com/sslmode/sslmode/master/IP.txt"
-wget -q -O IP "https://raw.githubusercontent.com/sslmode/sslmode/master/IP.txt"
+wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/IP.txt"
+wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/IP.txt"
 if ! grep -w -q $MYIP IP; then
 	echo "Maaf Bro Hanya IP terdaftar sahaja yang boleh menggunakan Autoscript ini" | lolcat
 	if [[ $vps = "zvur" ]]; then
