@@ -291,13 +291,12 @@ wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/squid3.sh && chmod
 
 # install webmin
 cd
-wget -O webmin-current.deb http://www.webmin.com/download/deb/webmin-current.deb
-dpkg -i --force-all webmin-current.deb
-apt-get -y -f install;
+wget http://prdownloads.sourceforge.net/webadmin/webmin_1.870_all.deb
+dpkg -i webmin_1.870_all.deb
+apt-get install perl libnet-ssleay-perl openssl libauthen-pam-perl libpam-runtime libio-pty-perl apt-show-versions python
+apt-get -f install
 sed -i 's/ssl=1/ssl=0/g' /etc/webmin/miniserv.conf
-rm -f /root/webmin-current.deb
 service webmin restart
-service vnstat restart
 
 # install pptp vpn
 wget $source/pptp.sh
