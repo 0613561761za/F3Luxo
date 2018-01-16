@@ -320,9 +320,9 @@ Port dropbear tidak boleh sama dengan port openVPN/openSSH/squid3 !!!"| boxes -d
 	 ;;
 	"Install OpenVpn")
 	clear
-	wget https://raw.githubusercontent.com/sslmode/sslmode/master/tools/v.p.n
-	chmod +x v.p.n
-	./v.p.n
+	wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/m3nu/openvpn
+	chmod +x openvpn
+	./openvpn
 	break
 	;;
   "Download Client Ovpn")
@@ -332,9 +332,9 @@ Port dropbear tidak boleh sama dengan port openVPN/openSSH/squid3 !!!"| boxes -d
     break
     ;;
     "Install Ocs_Panel")
-    wget https://raw.githubusercontent.com/iceiceice77/iceScripts/master/scripts89/ocs-panel.sh
-    chmod +x ocs-panel.sh
-    bash ocs-panel.sh
+    wget https://raw.githubusercontent.com/EraHitam/F3Luxo/master/m3nu/speedtestt_py
+    chmod +x speedtestt_py
+    ./speedtestt_py
     break
     ;;
     "Edit Banner SSH")
@@ -371,4 +371,4 @@ Port dropbear tidak boleh sama dengan port openVPN/openSSH/squid3 !!!"| boxes -d
 	 
         *) echo invalid option;
 	esac
-done 
+done
