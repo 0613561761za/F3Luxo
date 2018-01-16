@@ -329,77 +329,11 @@ wget -q https://github.com/ForNesiaFreak/FNS/raw/master/go/fornesia87.tgz
 tar xvfz fornesia87.tgz
 cd fornesia87
 make
-source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master"
-# download script
-cd
-wget -O /usr/bin/motd $source/m3nu/motd
-wget -O /usr/bin/benchmark $source/m3nu/benchmark.sh
-wget -O /usr/bin/speedtest $source/m3nu/speedtest_cli.py
-wget -O /usr/bin/ps-mem $source/m3nu/ps_mem.py
-wget -O /usr/bin/dropmon $source/m3nu/dropmon.sh
-wget -O /usr/bin/menu $source/m3nu/menu.sh
-wget -O /usr/bin/user-active-list $source/m3nu/user-active-list.sh
-wget -O /usr/bin/user-add $source/m3nu/user-add.sh
-wget -O /usr/bin/user-add-pptp $source/m3nu/user-add-pptp.sh
-wget -O /usr/bin/user-del $source/m3nu/user-del.sh
-wget -O /usr/bin/disable-user-expire $source/m3nu/disable-user-expire.sh
-wget -O /usr/bin/delete-user-expire $source/m3nu/delete-user-expire.sh
-wget -O /usr/bin/banned-user $source/m3nu/banned-user.sh
-wget -O /usr/bin/unbanned-user $source/m3nu/unbanned-user.sh
-wget -O /usr/bin/user-expire-list $source/m3nu/user-expire-list.sh
-wget -O /usr/bin/user-gen $source/m3nu/user-gen.sh
-wget -O /usr/bin/userlimit.sh $source/m3nu/userlimit.sh
-wget -O /usr/bin/userlimitssh.sh $source/m3nu/userlimitssh.sh
-wget -O /usr/bin/user-list $source/m3nu/user-list.sh
-wget -O /usr/bin/user-login $source/m3nu/user-login.sh
-wget -O /usr/bin/user-pass $source/m3nu/user-pass.sh
-wget -O /usr/bin/user-renew $source/m3nu/user-renew.sh
-wget -O /usr/bin/clearcache.sh $source/m3nu/clearcache.sh
-wget -O /usr/bin/bannermenu $source/m3nu/bannermenu
-cd
 
-#rm -rf /etc/cron.weekly/
-#rm -rf /etc/cron.hourly/
-#rm -rf /etc/cron.monthly/
-rm -rf /etc/cron.daily/
-wget -O /root/passwd $source/m3nu/passwd.sh
-chmod +x /root/passwd
-echo "01 23 * * * root /root/passwd" > /etc/cron.d/passwd
-
-echo "*/30 * * * * root service dropbear restart" > /etc/cron.d/dropbear
-echo "00 23 * * * root /usr/bin/disable-user-expire" > /etc/cron.d/disable-user-expire
-echo "0 */12 * * * root /sbin/reboot" > /etc/cron.d/reboot
-#echo "00 01 * * * root echo 3 > /proc/sys/vm/drop_caches && swapoff -a && swapon -a" > /etc/cron.d/clearcacheram3swap
-echo "*/30 * * * * root /usr/bin/clearcache.sh" > /etc/cron.d/clearcache1
-
-cd
-chmod +x /usr/bin/motd
-chmod +x /usr/bin/benchmark
-chmod +x /usr/bin/speedtest
-chmod +x /usr/bin/ps-mem
-#chmod +x /usr/bin/autokill
-chmod +x /usr/bin/dropmon
-chmod +x /usr/bin/menu
-chmod +x /usr/bin/user-active-list
-chmod +x /usr/bin/user-add
-chmod +x /usr/bin/user-add-pptp
-chmod +x /usr/bin/user-del
-chmod +x /usr/bin/disable-user-expire
-chmod +x /usr/bin/delete-user-expire
-chmod +x /usr/bin/banned-user
-chmod +x /usr/bin/unbanned-user
-chmod +x /usr/bin/user-expire-list
-chmod +x /usr/bin/user-gen
-chmod +x /usr/bin/userlimit.sh
-chmod +x /usr/bin/userlimitssh.sh
-chmod +x /usr/bin/user-list
-chmod +x /usr/bin/user-login
-chmod +x /usr/bin/user-pass
-chmod +x /usr/bin/user-renew
-chmod +x /usr/bin/clearcache.sh
-chmod +x /usr/bin/bannermenu
-cd
-
+# menu
+wget https://raw.githubusercontent.com/Mbah-Shondong/Debian732/master/update.sh
+chmod +x update.sh
+./update.sh
 
 # finishing
 chown -R www-data:www-data /home/vps/public_html
