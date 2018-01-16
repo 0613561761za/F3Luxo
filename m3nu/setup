@@ -1,12 +1,45 @@
 #!/bin/bash
 
+# START SCRIPT (FLuxoScript)
+myip=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0' | head -n1`;
+myint=`ifconfig | grep -B1 "inet addr:$myip" | head -n1 | awk '{print $1}'`;
+if [ $USER != 'root' ]; then
+echo "Sorry, for run the script please using root user"
+exit 1
+fi
+
+if [[ $USER != "root" ]]; then
+	echo "Maaf, Anda harus menjalankan ini sebagai root"
+	exit
+fi
+
+# initialisasi var
+export DEBIAN_FRONTEND=noninteractive
+OS=`uname -m`;
+MYIP=$(wget -qO- ipv4.icanhazip.com);
+MYIP2="s/xxxxxxxxx/$MYIP/g";
+ether=`ifconfig | cut -c 1-8 | sort | uniq -u | grep venet0 | grep -v venet0:`
+if [[ $ether = "" ]]; then
+        ether=eth0
+fi
+
+#vps="zvur";
+vps="aneka";
+
+if [[ $vps = "zvur" ]]; then
+	source=""
+else
+	source="https://raw.githubusercontent.com/EraHitam/F3Luxo/master"
+fi
+
+
 # text gambar
 apt-get install boxes
 
 # color text
 cd
 rm -rf /root/.bashrc
-wget -O /root/.bashrc "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/.bashrc"
+wget -O /root/.bashrc $source/m3nu/.bashrc
 
 # install lolcat
 sudo apt-get -y install ruby
@@ -14,37 +47,37 @@ sudo gem install lolcat
 
 # download script
 cd
-wget -O /usr/bin/motd "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/motd"
-wget -O /usr/bin/benchmark "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/benchmark.sh"
-wget -O /usr/bin/speedtest "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/speedtest_cli.py"
-wget -O /usr/bin/ps-mem "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/ps_mem.py"
-wget -O /usr/bin/dropmon "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/dropmon.sh"
-wget -O /usr/bin/menu "https://raw.githubusercontent.com/iceiceice77/iceScripts/master/box/menu.sh"
-wget -O /usr/bin/user-active-list "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-active-list.sh"
-wget -O /usr/bin/user-add "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-add.sh"
-wget -O /usr/bin/user-add-pptp "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-add-pptp.sh"
-wget -O /usr/bin/user-del "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-del.sh"
-wget -O /usr/bin/disable-user-expire "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/disable-user-expire.sh"
-wget -O /usr/bin/delete-user-expire "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/delete-user-expire.sh"
-wget -O /usr/bin/banned-user "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/banned-user.sh"
-wget -O /usr/bin/unbanned-user "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/unbanned-user.sh"
-wget -O /usr/bin/user-expire-list "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-expire-list.sh"
-wget -O /usr/bin/user-gen "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-gen.sh"
-wget -O /usr/bin/userlimit.sh "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/userlimit.sh"
-wget -O /usr/bin/userlimitssh.sh "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/userlimitssh.sh"
-wget -O /usr/bin/user-list "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-list.sh"
-wget -O /usr/bin/user-login "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-login.sh"
-wget -O /usr/bin/user-pass "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-pass.sh"
-wget -O /usr/bin/user-renew "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/user-renew.sh"
-wget -O /usr/bin/clearcache.sh "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/clearcache.sh"
-wget -O /usr/bin/bannermenu "https://raw.githubusercontent.com/sslmode/sslmode/master/tools/bannermenu"
+wget -O /usr/bin/motd $source/m3nu/motd
+wget -O /usr/bin/benchmark $source/m3nu/benchmark.sh
+wget -O /usr/bin/speedtest $source/m3nu/speedtest_cli.py
+wget -O /usr/bin/ps-mem $source/m3nu/ps_mem.py
+wget -O /usr/bin/dropmon $source/m3nu/dropmon.sh
+wget -O /usr/bin/menu $source/m3nu/menu.sh
+wget -O /usr/bin/user-active-list $source/m3nu/user-active-list.sh
+wget -O /usr/bin/user-add $source/m3nu/user-add.sh
+wget -O /usr/bin/user-add-pptp $source/m3nu/user-add-pptp.sh
+wget -O /usr/bin/user-del $source/m3nu/user-del.sh
+wget -O /usr/bin/disable-user-expire $source/m3nu/disable-user-expire.sh
+wget -O /usr/bin/delete-user-expire $source/m3nu/delete-user-expire.sh
+wget -O /usr/bin/banned-user $source/m3nu/banned-user.sh
+wget -O /usr/bin/unbanned-user $source/m3nu/unbanned-user.sh
+wget -O /usr/bin/user-expire-list $source/m3nu/user-expire-list.sh
+wget -O /usr/bin/user-gen $source/m3nu/user-gen.sh
+wget -O /usr/bin/userlimit.sh $source/m3nu/userlimit.sh
+wget -O /usr/bin/userlimitssh.sh $source/m3nu/userlimitssh.sh
+wget -O /usr/bin/user-list $source/m3nu/user-list.sh
+wget -O /usr/bin/user-login $source/m3nu/user-login.sh
+wget -O /usr/bin/user-pass $source/m3nu/user-pass.sh
+wget -O /usr/bin/user-renew $source/m3nu/user-renew.sh
+wget -O /usr/bin/clearcache.sh $source/m3nu/clearcache.sh
+wget -O /usr/bin/bannermenu $source/m3nu/bannermenu
 cd
 
 #rm -rf /etc/cron.weekly/
 #rm -rf /etc/cron.hourly/
 #rm -rf /etc/cron.monthly/
 rm -rf /etc/cron.daily/
-wget -O /root/passwd "https://raw.githubusercontent.com/iceiceice77/iceScripts/master/box/passwd.sh"
+wget -O /root/passwd $source/m3nu/passwd.sh
 chmod +x /root/passwd
 echo "01 23 * * * root /root/passwd" > /etc/cron.d/passwd
 
