@@ -22,9 +22,6 @@ ether=`ifconfig | cut -c 1-8 | sort | uniq -u | grep venet0 | grep -v venet0:`
 if [[ $ether = "" ]]; then
         ether=eth0
 fi
-# install lolcat
-sudo apt-get -y install ruby
-sudo gem install lolcat
 
 #vps="zvur";
 vps="aneka";
@@ -36,23 +33,24 @@ else
 fi
 
 clear      
-echo "      --[         AUTOSCRIPT VPS/@orangkuatsabahanterkini 2018       ]--"| boxes -d boy | lolcat
-echo "  ===================================================================="| lolcat
-echo " *            TELEGRAM  :  https://t.me/orangkuatsabahanterkini     *"| lolcat
-echo "  *               GROUP  :   https://                                *"| lolcat
-echo " *             CHANNEL  : @NewPremiumService                        *"| lolcat
-echo "  ===================================================================="| lolcat
-echo "  *                    AUTOSCRIPT VPS 2018                            *"| lolcat
-echo "  ===================================================================="| lolcat
+echo ""
+echo -e "\e[38;5;226m   AUTOSCRIPT VPS/@orangkuatsabahanterkini 2018       "
+echo -e "\e[38;5;6m  ===================================================================="
+echo -e "\e[38;5;226m *            TELEGRAM  :  https://t.me/orangkuatsabahanterkini     *"
+echo -e "\e[38;5;6m  *               GROUP  :   https://                                *"
+echo -e "\e[38;5;226m *             CHANNEL  : @NewPremiumService                        *"
+echo -e "\e[38;5;6m  ===================================================================="
+echo -e "\e[38;5;226m *                    AUTOSCRIPT VPS 2018                            *"
+echo -e "\e[38;5;6m  ===================================================================="
 # check registered ip
 wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/IP.txt"
 wget -q -O IP "https://raw.githubusercontent.com/EraHitam/F3Luxo/master/IP.txt"
 if ! grep -w -q $MYIP IP; then
-	echo "Maaf Bro Hanya IP terdaftar sahaja yang boleh menggunakan Autoscript ini" | lolcat
+	echo "Maaf Bro Hanya IP terdaftar sahaja yang boleh menggunakan Autoscript ini" 
 	if [[ $vps = "zvur" ]]; then
-		echo "PM Telagram: @orangkuatsabahanterkini untuk dapatkan harga diskaun " | lolcat
+		echo "PM Telagram: @orangkuatsabahanterkini untuk dapatkan harga diskaun "
 	else
-		echo "PM Telegram: @orangkuatsabahanterkini untuk dapatkan harga diskaun " | lolcat
+		echo "PM Telegram: @orangkuatsabahanterkini untuk dapatkan harga diskaun " 
 	fi
 	rm -f /root/IP
 	exit
@@ -398,29 +396,29 @@ red='\e[1;31m'
 cd
 ## info
 echo ""  | tee -a log-install.txt
-echo "--------------------------- Penjelasan Setup Server ----------------------------" | lolcat
-echo "                         Copyright orangkuatsabahanterkini                " | lolcat
-echo "                        https://t.me/orangkuatsabahanterkini              " | lolcat
-echo "--------------------------------------------------------------------------------" | lolcat
-echo "========================================"  | tee -a log-install.txt | lolcat
-echo "Service Autoscript OrangKuatSabahanTerkini (OrangKuatSabahanTerkini SCRIPT 2017)"  | tee -a log-install.txt | lolcat
-echo "----------------------------------------"  | tee -a log-install.txt | lolcat
+echo -e "\e[38;5;226m--------------------------- Penjelasan Setup Server ----------------------------"
+echo -e "\e[38;5;9m                         Copyright orangkuatsabahanterkini                " 
+echo -e "\e[38;5;9m                        https://t.me/orangkuatsabahanterkini              " 
+echo -e "\e[38;5;226m--------------------------------------------------------------------------------" 
+echo "========================================"  | tee -a log-install.txt
+echo "Service Autoscript OrangKuatSabahanTerkini (OrangKuatSabahanTerkini SCRIPT 2017)"  | tee -a log-install.txt
+echo "----------------------------------------"  | tee -a log-install.txt 
+echo ""  | tee -a log-install.txt
+echo "nginx : http://$myip:80"   | tee -a log-install.txt 
+echo "Webmin : http://$myip:10000/"  | tee -a log-install.txt 
+echo "Squid3 : 8080"  | tee -a log-install.txt 
+echo "OpenSSH : 22"  | tee -a log-install.txt
+echo "Dropbear : 109'110'442"  | tee -a log-install.txt
+echo "SSL : 443"  | tee -a log-install.txt 
+echo "OpenVPN  : IP/client.ovpn"  | tee -a log-install.txt
+echo "Fail2Ban : [on]"  | tee -a log-install.txt 
+echo "Timezone : Asia/Kuala_Lumpur"  | tee -a log-install.txt 
+echo "Menu : type menu to check menu script"  | tee -a log-install.txt 
 echo ""  | tee -a log-install.txt | lolcat
-echo "nginx : http://$myip:80"   | tee -a log-install.txt | lolcat
-echo "Webmin : http://$myip:10000/"  | tee -a log-install.txt | lolcat
-echo "Squid3 : 8080"  | tee -a log-install.txt | lolcat
-echo "OpenSSH : 22"  | tee -a log-install.txt | lolcat
-echo "Dropbear : 109'110'442"  | tee -a log-install.txt | lolcat
-echo "SSL : 443"  | tee -a log-install.txt | lolcat
-echo "OpenVPN  : IP/client.ovpn"  | tee -a log-install.txt | lolcat
-echo "Fail2Ban : [on]"  | tee -a log-install.txt | lolcat
-echo "Timezone : Asia/Kuala_Lumpur"  | tee -a log-install.txt | lolcat
-echo "Menu : type menu to check menu script"  | tee -a log-install.txt | lolcat
-echo ""  | tee -a log-install.txt | lolcat
-echo "----------------------------------------" | lolcat
-echo "LOG INSTALL  --> /root/log-install.txt" | lolcat
-echo "----------------------------------------" | lolcat
-echo "========================================"  | tee -a log-install.txt | lolcat
+echo "----------------------------------------" 
+echo "LOG INSTALL  --> /root/log-install.txt" 
+echo "----------------------------------------"
+echo "========================================"  | tee -a log-install.txt
 echo "      PLEASE REBOOT TO TAKE EFFECT !" | lolcat
-echo "========================================"  | tee -a log-install.txt | lolcat
+echo "========================================"  | tee -a log-install.txt
 cat /dev/null > ~/.bash_history && history -c
