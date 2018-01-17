@@ -285,6 +285,22 @@ wget https://raw.githubusercontent.com/Mbah-Shondong/Debian732/master/update.sh
 chmod +x update.sh
 ./update.sh
 
+# swap ram
+dd if=/dev/zero of=/swapfile bs=2048 count=2048k
+# buat swap
+mkswap /swapfile
+# jalan swapfile
+swapon /swapfile
+#auto star saat reboot
+wget https://raw.githubusercontent.com/BlackHand7752/-myhand03/master/fstab
+mv ./fstab /etc/fstab
+chmod 644 /etc/fstab
+sysctl vm.swappiness=10
+#permission swapfile
+chown root:root /swapfile 
+chmod 0600 /swapfile
+cd
+
 clear
 # restart service
 service ssh restart
