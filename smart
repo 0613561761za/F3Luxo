@@ -18,7 +18,23 @@ echo "
 AUTOSCRIPT BY OrangKuatSabahanTerkini
 AMBIL PERHATIAN !!!"
 clear
+ red='\e[1;31m'
+               green='\e[0;32m'
+               NC='\e[0m'
 
+               echo -e "\e[38;5;82m Connecting to Autoscript OrangKuatsab..."
+			   sleep 1
+
+			   echo -e "\e[38;5;11m Connecting to your ip : $myip ...."
+               sleep 2
+                          echo -e "\e[38;5;13m Proses ini akan mengambil masa 10-15 minit"
+		sleep 2.5	  
+			   echo -e "\e[38;5;226m IP ANDA Berjaya Di Daftarkan..."
+               sleep 1.5
+               
+			   echo -e "${green}Mula Setup...${NC}"
+               sleep 1
+	       cd
 echo "START AUTOSCRIPT"
 clear
 echo "SET TIMEZONE KUALA LUMPUT GMT +8"
@@ -276,30 +292,51 @@ service webmin restart
 service squid restart
 service fail2ban restart
 clear
+rm -f /root/.bash_history && history -c
+echo "unset HISTFILE" >> /etc/profile
+cd
+red='\e[1;31m'
+               green='\e[0;32m'
+               NC='\e[0m'
 
-# SELASAI SUDAH BOSS! ( AutoscriptByOrangKuatSabahanTerkini )
+               echo -e "\e[38;5;82m KAMI TENGAH BUAT KIRAAN VPS ANDA..."
+			   sleep 1
+
+			   echo -e "\e[38;5;11m DALAM KIRAAN 3...."
+               sleep 2
+                          echo -e "\e[38;5;13m DALAM KIRAAN 2"
+		sleep 2.5	  
+			   echo -e "\e[38;5;226m DALAM KIRAAN 1..."
+               sleep 1.5
+               
+			   echo -e "${green}SUDAH BERJAYA...${NC}"
+               sleep 1
+cd
+## info
+echo ""  | tee -a log-install.txt
+echo -e "\e[38;5;9m☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ PREMIUM SERVER ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆\e[0m" 
+echo -e "\e[38;5;9m                      Copyright orangkuatsabahanterkini                \e[0m" 
+echo -e "\e[38;5;9m                      https://t.me/orangkuatsabahanterkini              \e[0m"  
+echo -e "\e[38;5;197m☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆\e[0m" 
 echo "========================================"  | tee -a log-install.txt
 echo "Service Autoscript OrangKuatSabahanTerkini (OrangKuatSabahanTerkini SCRIPT 2017)"  | tee -a log-install.txt
-echo "----------------------------------------"  | tee -a log-install.txt
+echo "----------------------------------------"  | tee -a log-install.txt 
 echo ""  | tee -a log-install.txt
-echo "nginx : http://$myip:80"   | tee -a log-install.txt
-echo "Webmin : http://$myip:10000/"  | tee -a log-install.txt
-echo "Squid3 : 8080"  | tee -a log-install.txt
-echo "OpenSSH : 22"  | tee -a log-install.txt
-echo "Dropbear : 443"  | tee -a log-install.txt
-echo "OpenVPN  : TCP 1194 (SILA DAPATKAN DENGAN OrangKuatSabahanTerkini)"  | tee -a log-install.txt
-echo "Fail2Ban : [on]"  | tee -a log-install.txt
-echo "Timezone : Asia/Kuala_Lumpur"  | tee -a log-install.txt
-echo "Menu : type menu to check menu script"  | tee -a log-install.txt
-echo ""  | tee -a log-install.txt
+echo -e "\e[38;5;214mnginx\e[38;5;13m http://$myip:80\e[0m"   | tee -a log-install.txt 
+echo -e "\e[38;5;214mWebmin\e[38;5;13m http://$myip:10000/\e[0m"  | tee -a log-install.txt 
+echo -e "\e[38;5;214mSquid3\e[38;5;13m 8080\e[0m" | tee -a log-install.txt 
+echo -e "\e[38;5;214mOpenSSH\e[38;5;13m 22\e[0m"  | tee -a log-install.txt
+echo -e "\e[38;5;214mDropbear\e[38;5;13m 109'110'442\e[0m"  | tee -a log-install.txt
+echo -e "\e[38;5;214mSSL\e[38;5;13m 443\e[0m" | tee -a log-install.txt 
+echo -e "\e[38;5;214mOpenVPN\e[38;5;13m IP/client.ovpn\e[0m"  | tee -a log-install.txt
+echo "Fail2Ban : [on]"  | tee -a log-install.txt 
+echo "Timezone : Asia/Kuala_Lumpur"  | tee -a log-install.txt 
+echo "Menu : type menu to check menu script"  | tee -a log-install.txt 
+echo ""  | tee -a log-install.txt | lolcat
+echo "----------------------------------------" 
+echo "LOG INSTALL  --> /root/log-install.txt" 
 echo "----------------------------------------"
-echo "LOG INSTALL  --> /root/log-install.txt"
-echo "----------------------------------------"
-echo "========================================"  | tee -a log-install.txt
-echo "      PLEASE REBOOT TO TAKE EFFECT !"
-echo "========================================"  | tee -a log-install.txt
+echo "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"  | tee -a log-install.txt
+echo "      PLEASE REBOOT TO TAKE EFFECT !" | lolcat
+echo "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"  | tee -a log-install.txt
 cat /dev/null > ~/.bash_history && history -c
-rm *.txt
-rm *.sh
-exit
-fi
