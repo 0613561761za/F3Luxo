@@ -14,7 +14,6 @@ if [ $MYIP = "" ]; then
 fi
 
 # go to root
-cd
 red='\e[1;31m'
                green='\e[0;32m'
                NC='\e[0m'
@@ -31,7 +30,9 @@ red='\e[1;31m'
                
 			   echo -e "${green}Mula Setup...${NC}"
                sleep 1
-	       cd
+# HOME SWEET HOME
+cd
+
 # disable ipv6
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local
@@ -360,22 +361,6 @@ chmod +x /usr/bin/benchmark
 echo "0 0 * * * root /usr/bin/user-expire" > /etc/cron.d/user-expire
 echo "0 */12 * * * root /sbin/reboot" > /etc/cron.d/reboot
 echo "* * * * * service dropbear restart" > /etc/cron.d/dropbear
-
-# swap ram
-dd if=/dev/zero of=/swapfile bs=2048 count=2048k
-# buat swap
-mkswap /swapfile
-# jalan swapfile
-swapon /swapfile
-#auto star saat reboot
-wget https://raw.githubusercontent.com/BlackHand7752/-myhand03/master/fstab
-mv ./fstab /etc/fstab
-chmod 644 /etc/fstab
-sysctl vm.swappiness=10
-#permission swapfile
-chown root:root /swapfile 
-chmod 0600 /swapfile
-cd
 
 # finalisasi
 apt-get -y autoremove
