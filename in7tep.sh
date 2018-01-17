@@ -36,16 +36,6 @@ vps="blangkon";
 # go to root
 cd
 
-# check registered ip
-wget -q -O IP $source/debian7/IP.txt
-if ! grep -w -q $MYIP IP; then
-clear
-	echo “考中中末尸中留所疑燭山IP"
-
-	rm /root/IP
-	rm -f /root/IP
-	exit	
-fi
 #!/bin/bash
 cd
 # Change to Time GMT+8
