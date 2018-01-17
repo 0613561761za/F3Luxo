@@ -324,22 +324,22 @@ red='\e[1;31m'
                echo -e "\e[38;5;82m KAMI TENGAH BUAT KIRAAN VPS ANDA..."
 			   sleep 1
 
-			   echo -e "\e[38;5;11m DALAM KIRAAN 3...."
+			   echo -e "\e[38;5;11m 🕣🕐🕜 3...."
                sleep 2
-                          echo -e "\e[38;5;13m DALAM KIRAAN 2"
+                          echo -e "\e[38;5;13m 🕡🕟 2"
 		sleep 2.5	  
-			   echo -e "\e[38;5;226m DALAM KIRAAN 1..."
+			   echo -e "\e[38;5;226m 🕛 1..."
                sleep 1.5
                
-			   echo -e "${green}SUDAH BERJAYA...${NC}"
+			   echo -e "${green}SUDAH BERJAYA✔...${NC}"
                sleep 1
 cd
 ## info
 echo ""  | tee -a log-install.txt
-echo -e "\e[38;5;9m☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ PREMIUM SERVER ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆\e[0m" 
+echo -e "\e[38;5;19mΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ PREMIUM SERVER ΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ\e[0m" 
 echo -e "\e[38;5;9m                      Copyright orangkuatsabahanterkini                \e[0m" 
 echo -e "\e[38;5;9m                      https://t.me/orangkuatsabahanterkini              \e[0m"  
-echo -e "\e[38;5;197m☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆\e[0m" 
+echo -e "\e[38;5;19mΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞΞ\e[0m" 
 echo "========================================"  | tee -a log-install.txt
 echo "Service Autoscript OrangKuatSabahanTerkini (OrangKuatSabahanTerkini SCRIPT 2017)"  | tee -a log-install.txt
 echo "----------------------------------------"  | tee -a log-install.txt 
