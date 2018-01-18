@@ -1,0 +1,504 @@
+#!/bin/sh
+# This script was generated using Makeself 2.1.3
+INSTALLER_VERSION=v00066
+REVISION=3070cf767bd68bffdef8bd75660b6af1fec09d1b
+
+CRCsum="2700636119"
+MD5="d9968a1ad64e5dc3acc15cbd53e4f7b9"
+TMPROOT=${TMPDIR:=/home/cPanelInstall}
+
+label="cPanel & WHM Installer"
+script="./bootstrap"
+scriptargs=""
+targetdir="installd"
+filesizes="17806"
+keep=n
+
+print_cmd_arg=""
+if type printf > /dev/null; then
+    print_cmd="printf"
+elif test -x /usr/ucb/echo; then
+    print_cmd="/usr/ucb/echo"
+else
+    print_cmd="echo"
+fi
+
+MS_Printf()
+{
+    $print_cmd $print_cmd_arg "$1"
+}
+
+MS_Progress()
+{
+    while read a; do
+	MS_Printf .
+    done
+}
+
+MS_dd()
+{
+    blocks=`expr $3 / 1024`
+    bytes=`expr $3 % 1024`
+    dd if="$1" ibs=$2 skip=1 obs=1024 conv=sync 2> /dev/null | \
+    { test $blocks -gt 0 && dd ibs=1024 obs=1024 count=$blocks ; \
+      test $bytes  -gt 0 && dd ibs=1 obs=1024 count=$bytes ; } 2> /dev/null
+}
+
+MS_Help()
+{
+    cat << EOH >&2
+Makeself version 2.1.3
+ 1) Getting help or info about $0 :
+  $0 --help    Print this message
+  $0 --info    Print embedded info : title, default target directory, embedded script ...
+  $0 --version Display the installer version
+  $0 --lsm     Print embedded lsm entry (or no LSM)
+  $0 --list    Print the list of files in the archive
+  $0 --check   Checks integrity of the archive
+ 
+ 2) Running $0 :
+  $0 [options] [--] [additional arguments to embedded script]
+  with following options (in that order)
+  --confirm             Ask before running embedded script
+  --noexec              Do not run embedded script
+  --keep                Do not erase target directory after running
+			the embedded script
+  --nox11               Do not spawn an xterm
+  --nochown             Do not give the extracted files to the current user
+  --target NewDirectory Extract in NewDirectory
+  --tar arg1 [arg2 ...] Access the contents of the archive through the tar command
+  --force               Force to install cPanel on a non recommended configuration
+  --                    Following arguments will be passed to the embedded script
+EOH
+}
+
+MS_Check()
+{
+    OLD_PATH=$PATH
+    PATH=${GUESS_MD5_PATH:-"$OLD_PATH:/bin:/usr/bin:/sbin:/usr/local/ssl/bin:/usr/local/bin:/opt/openssl/bin"}
+    MD5_PATH=`exec 2>&-; which md5sum || type md5sum`
+    MD5_PATH=${MD5_PATH:-`exec 2>&-; which md5 || type md5`}
+    PATH=$OLD_PATH
+    MS_Printf "Verifying archive integrity..."
+    offset=`head -n 383 "$1" | wc -c | tr -d " "`
+    verb=$2
+    i=1
+    for s in $filesizes
+    do
+	crc=`echo $CRCsum | cut -d" " -f$i`
+	if test -x "$MD5_PATH"; then
+	    md5=`echo $MD5 | cut -d" " -f$i`
+	    if test $md5 = "00000000000000000000000000000000"; then
+		test x$verb = xy && echo " $1 does not contain an embedded MD5 checksum." >&2
+	    else
+		md5sum=`MS_dd "$1" $offset $s | "$MD5_PATH" | cut -b-32`;
+		if test "$md5sum" != "$md5"; then
+		    echo "Error in MD5 checksums: $md5sum is different from $md5" >&2
+		    exit 2
+		else
+		    test x$verb = xy && MS_Printf " MD5 checksums are OK." >&2
+		fi
+		crc="0000000000"; verb=n
+	    fi
+	fi
+	if test $crc = "0000000000"; then
+	    test x$verb = xy && echo " $1 does not contain a CRC checksum." >&2
+	else
+	    sum1=`MS_dd "$1" $offset $s | cksum | awk '{print $1}'`
+	    if test "$sum1" = "$crc"; then
+		test x$verb = xy && MS_Printf " CRC checksums are OK." >&2
+	    else
+		echo "Error in checksums: $sum1 is different from $crc"
+		exit 2;
+	    fi
+	fi
+	i=`expr $i + 1`
+	offset=`expr $offset + $s`
+    done
+    echo " All good."
+}
+
+UnTAR()
+{
+    tar $1vf - 2>&1 || { echo Extraction failed. > /dev/tty; kill -15 $$; }
+}
+
+finish=true
+xterm_loop=
+nox11=n
+copy=none
+ownership=y
+verbose=n
+
+initargs="$@"
+
+while true
+do
+    case "$1" in
+    -h | --help)
+	MS_Help
+	exit 0
+	;;
+    --version)
+    echo "$INSTALLER_VERSION"
+    exit 0
+    ;;
+    --info)
+    echo Installer Version: "$INSTALLER_VERSION"
+    echo Installer Revision: "$REVISION"
+	echo Identification: "$label"
+	echo Target directory: "$targetdir"
+	echo Uncompressed size: 80 KB
+	echo Compression: gzip
+	echo Date of packaging: Wed Aug 30 10:02:48 CDT 2017
+	echo Built with Makeself version 2.1.3 on linux-gnu
+	echo Build command was: "utils/makeself installd latest cPanel & WHM Installer ./bootstrap"
+	if test x$script != x; then
+	    echo Script run after extraction:
+	    echo "    " $script $scriptargs
+	fi
+	if test x"" = xcopy; then
+		echo "Archive will copy itself to a temporary location"
+	fi
+	if test x"n" = xy; then
+	    echo "directory $targetdir is permanent"
+	else
+	    echo "$targetdir will be removed after extraction"
+	fi
+	exit 0
+	;;
+    --dumpconf)
+	echo LABEL=\"$label\"
+	echo SCRIPT=\"$script\"
+	echo SCRIPTARGS=\"$scriptargs\"
+	echo archdirname=\"installd\"
+	echo KEEP=n
+	echo COMPRESS=gzip
+	echo filesizes=\"$filesizes\"
+	echo CRCsum=\"$CRCsum\"
+	echo MD5sum=\"$MD5\"
+	echo OLDUSIZE=80
+	echo OLDSKIP=384
+	exit 0
+	;;
+    --lsm)
+cat << EOLSM
+No LSM.
+EOLSM
+	exit 0
+	;;
+    --list)
+	echo Target directory: $targetdir
+	offset=`head -n 383 "$0" | wc -c | tr -d " "`
+	for s in $filesizes
+	do
+	    MS_dd "$0" $offset $s | eval "gzip -cd" | UnTAR t
+	    offset=`expr $offset + $s`
+	done
+	exit 0
+	;;
+	--tar)
+	offset=`head -n 383 "$0" | wc -c | tr -d " "`
+	arg1="$2"
+	if ! shift 2; then
+	    MS_Help
+	    exit 1
+	fi
+	for s in $filesizes
+	do
+	    MS_dd "$0" $offset $s | eval "gzip -cd" | tar "$arg1" - $*
+	    offset=`expr $offset + $s`
+	done
+	exit 0
+	;;
+    --check)
+	MS_Check "$0" y
+	exit 0
+	;;
+    --confirm)
+	verbose=y
+	shift
+	;;
+	--noexec)
+	script=""
+	shift
+	;;
+    --keep)
+	keep=y
+	shift
+	;;
+    --target)
+	keep=y
+	targetdir=${2:-.}
+	if ! shift 2; then
+	    MS_Help
+	    exit 1
+	fi
+	;;
+    --nox11)
+	nox11=y
+	shift
+	;;
+    --nochown)
+	ownership=n
+	shift
+	;;
+    --xwin)
+	finish="echo Press Return to close this window...; read junk"
+	xterm_loop=1
+	shift
+	;;
+    --phase2)
+	copy=phase2
+	shift
+	;;
+	--force)
+	scriptargs=" --force"
+	shift
+	;;
+    --)
+	shift
+	break ;;
+    -*)
+	echo Unrecognized flag : "$1" >&2
+	MS_Help
+	exit 1
+	;;
+    *)
+	break ;;
+    esac
+done
+
+case "$copy" in
+copy)
+    SCRIPT_COPY="$TMPROOT/makeself$$"
+    echo "Copying to a temporary location..." >&2
+    cp "$0" "$SCRIPT_COPY"
+    chmod +x "$SCRIPT_COPY"
+    cd "$TMPROOT"
+    exec "$SCRIPT_COPY" --phase2
+    ;;
+phase2)
+    finish="$finish ; rm -f $0"
+    ;;
+esac
+
+if test "$nox11" = "n"; then
+    if tty -s; then                 # Do we have a terminal?
+	:
+    else
+        if test x"$DISPLAY" != x -a x"$xterm_loop" = x; then  # No, but do we have X?
+            if xset q > /dev/null 2>&1; then # Check for valid DISPLAY variable
+                GUESS_XTERMS="xterm rxvt dtterm eterm Eterm kvt konsole aterm"
+                for a in $GUESS_XTERMS; do
+                    if type $a >/dev/null 2>&1; then
+                        XTERM=$a
+                        break
+                    fi
+                done
+                chmod a+x $0 || echo Please add execution rights on $0
+                if test `echo "$0" | cut -c1` = "/"; then # Spawn a terminal!
+                    exec $XTERM -title "$label" -e "$0" --xwin "$initargs"
+                else
+                    exec $XTERM -title "$label" -e "./$0" --xwin "$initargs"
+                fi
+            fi
+        fi
+    fi
+fi
+
+if test "$targetdir" = "."; then
+    tmpdir="."
+else
+    if test "$keep" = y; then
+	echo "Creating directory $targetdir" >&2
+	tmpdir="$targetdir"
+    else
+	tmpdir="$TMPROOT/selfgz$$"
+    fi
+    mkdir -p $tmpdir || {
+	echo 'Cannot create target directory' $tmpdir >&2
+	echo 'You should try option --target OtherDirectory' >&2
+	eval $finish
+	exit 1
+    }
+fi
+
+location="`pwd`"
+if test x$SETUP_NOCHECK != x1; then
+    MS_Check "$0"
+fi
+offset=`head -n 383 "$0" | wc -c | tr -d " "`
+
+if test x"$verbose" = xy; then
+	MS_Printf "About to extract 80 KB in $tmpdir ... Proceed ? [Y/n] "
+	read yn
+	if test x"$yn" = xn; then
+		eval $finish; exit 1
+	fi
+fi
+
+MS_Printf "Uncompressing $label"
+res=3
+if test "$keep" = n; then
+    trap 'echo Signal caught, cleaning up >&2; cd $TMPROOT; /bin/rm -rf $tmpdir; eval $finish; exit 15' 1 2 3 15
+fi
+
+for s in $filesizes
+do
+    if MS_dd "$0" $offset $s | eval "gzip -cd" | ( cd "$tmpdir"; UnTAR x ) | MS_Progress; then
+		if test x"$ownership" = xy; then
+			(PATH=/usr/xpg4/bin:$PATH; cd "$tmpdir"; chown -R `id -u` .;  chgrp -R `id -g` .)
+		fi
+    else
+		echo
+		echo "Unable to decompress $0" >&2
+		eval $finish; exit 1
+    fi
+    offset=`expr $offset + $s`
+done
+echo
+
+cd "$tmpdir"
+res=0
+if test x"$script" != x; then
+    if test x"$verbose" = xy; then
+		MS_Printf "OK to execute: $script $scriptargs $* ? [Y/n] "
+		read yn
+		if test x"$yn" = x -o x"$yn" = xy -o x"$yn" = xY; then
+			eval $script $scriptargs $*; res=$?;
+		fi
+    else
+		eval $script $scriptargs $*; res=$?
+    fi
+    if test $res -ne 0; then
+		test x"$verbose" = xy && echo "The program '$script' returned an error code ($res)" >&2
+    fi
+fi
+if test "$keep" = n; then
+    cd $TMPROOT
+    /bin/rm -rf $tmpdir
+fi
+eval $finish; exit $res
+
+� �ӦY�<kS�Ȗ��_�8ޑ=�M�d�$��*,f��J2���X=����߾�nI-Yp3�uS�[�
+��O��(JD����O>O���'|�?����ۃ�?�=x���X��w�"�c��@����������/�Y�a2��n|69<9n4�)��6X��f�ڎ{����s=a_�ܒ�Z	�/�}ˉ�(M�yĒ>��0/��]F
+�^7ѽX4�^���Ϟ�O^�C9�c��B�:<�����,�$�[g�w�_�����e�p�4�8i��)�}�	f_۞��������?�UMֵ�Q?rl_��oƝYĚG^x兗�f9K"V�M��uE���b�F�ei�E+DW��)O[��.3J�������N��v�+�ݐ�@=��.�]�e[�q�p�¥K{�3��y	Qsy#&]+���a����8��>9A��y���M۟Z��3X��?���c/LX3��+Ԕ��%͕�Er���a;r�/�3�]�E1���
+��.�_S/��r�"�^�M;�%�'��/�0D=
+l/,a	*��X�L�Z?"��sFv���*������P�%,?>a'�o�g̙q�J01�Rߕl��S��,
+}.D�����o�X
+�fv��:`��d6������
+E�������V��������w��J�s�`J"P������Q6��zƽ�?�~��R�?(������Ͽ��;�)��Ε}�\�p�����ɰ�u������2�.gI��-�5sN�&�:�?�كC	�`g\����N|!q5C�|3�Y�̇�^� ��Wv"��[��?��`xO��.�|�� W�Kh��,���!�AL0��m�μ/�n��
+��zN2��;ƐC}�p���(M��
+�� H��F�Ƭ@` �ʎ,�ϓ�a������t6���'G'g��� �����㣣��8��½�p��uAHrC!�o��l���u`���t̓4�ħ.�ڮ��no1��z��	�jDp	���3��I�,no=�0�#~��` �_q�YZ� e�� ���.s�E
+a�$�0� 㗿�n�:�&;�z;y�fM����?�6o� !V���Ç2'��i�*����0�D�r�E������Npx�=m���9BJ���{g�x���8g�q��������ǯNj�	<�����n�j�|�H�]�J#�H�s=Ȣ?��a�'�?=��C��I�\qe&K1��D�g�=<�A��G�p��>z�?��y�X�_��p��2
+(� ��Kf�� `N�)2�(e�*�o�-w��z\�>3�<6qR�W�ܲAg��8?�Y�{�o��;|q��Ҧ�jǗHN�/�8%Q�6(��Ӱ�b���N�LI��lLk����l�,���}�
+<�'�Be���[/:
+�fQ0g��|D&��P�҄�Y��i�����ʓ�BVV����Z��w7�������z�7[�`f���.=�;~m���mߐ�]��k��{=6V�So�i`�+���R+�>,!$zNg��x��ɈN;U�8o'�"����Xc� ���7�nʒ�@�Tu�
+�}>�ǉMٵ��!�cƴ��cn�K�	t�槰և(�<xD�\��A#a����z�@֪@�)E� Ɏ��`w�2RE�#H�1��"��{.��z�� ��Қ��̨4.o�eȦ�-v�Ʌ_����V�*���˸f�4�:T��;A��2����꾒����?f馫;5�~<d�T{RQ���(ufm
+<�b-J���v���[���O_3�2b/f�(�	s||�]��I�#&�P�����+�[�I�l�
+��	;t�����P�1`-�-�>�A��+mYy�J�U�2]����9��Y�I�3D�WY>���/�z�!�vuj�X?���9��a&k�0�kY��I	n�F��O��`skՃA��RҦݲ:��-���W[���8�d�i�����=GrI9,9A�R��B��������'qD���&{e{>2+
+E:�Gq���'�-��K�+�ؙQ�@�%��R���2��E��@b���.�HZtr#��(��a�!!w~g��`��S`T_������2��h�'����4`l�\n��cw㡝�c��"V�h��=�C�b:Q8�.ɲ�Bn�>z��Ԑ���b�6/� h;\�hJH%�9*]�q2�\K�qgD.��f�4���/��$R�(N��p�W��(�!L���+<���D��&�<)A�PJz���>�ljڤ��~�Z��#���!�M�l�3��\���芔�z;!�ꏰ���Л�����l2�h�@�a�m��L-� ߿Uqk��e^�y$���،�~2�Z�M�h12Efs�!	�K�_3[ ' �Q|U�+9�M��:B3�$��B��Q�5e�8���s2�}'$�5urЯ+Z�לNtF�0�����k��)7"f-�S�&Ƥ���:��v�ʝBӼ��K�@��L�h[�>;WKl�������p�p�n�#���R�%˼�e��)Zv�<u0F���"������6� �
+FG�� 㜂END�]dNFT�oU�2�@'�ION��>�� �v���A�a�\B��~�vqFN�6�C ����Si���p�9�!f��.�''C��!�6SȐR��]]��.�d�##�d�B��<�XJ�!q�Y�@OXjw%��E�(�;]��ȹ�G�'���� �:�2�j%r#F�h�@bzT���P �{������7��9B�^� K��f�Yr��� ��{�Q.Э]����]�@��qCĶ�^���h?M�^y�x4�I�?�)ȼ���|$4腁#��S,/"-M�8hN5�S�.�BS�T��>;};!)�Ё}��m��~�1'�|ˣuiZ�'*����O���ٺ�L9=@��y ������ɤwJ��h�5����ˢ���ft.6�]��E,�,Z �-�o�h�	�2�2H��Mb�㳷��{�c%4\ Q�H-4G�؆���TR$��(=��0�%��g�e���UR�J�PIR|��b-B&��ɿ�4Y��0&	`�f�b�+�D��9#��aY4����obЬY�͒=�Y=/��R��ѫO�jhR^��Yu�b��W��5�9�*o�E��C.�k~MB�������S�X��BK{��pщ�����<q%h3w�$��s���͡^�Yxh�1	J�(8�~����!n;���G��T��7-����(rt>�r !=vq�ʞ �#C�Ұ�]��;�ٳ��� �EN0j���*��a�]?��5��|��b�^�,H�ě��L����M=$^P��0j�}��s],Z5ȴ�%��a��N��8��BI��
+��̻��\`d`��4��7���h(F6�
+%١���ؒ����X�m���VwV��U#���I�*�K���}���X�������)�0IA����a#&|�ՠ�}�LS!$�S� *�h4�z�l������_8��]Uo-�ۣ]�&��PT�Ȕ,B�Ջ�{m5�]���i�7b�a�6����<�@��ǷE�����,VE��	.l�Zfl��0��$Ɔn�(��<zT.��w�e�k�.��&������d�$'T[FV���@�r���U���q�_��J��Y��JlS�����3�K6o�&o���h.�f��!��c]?�8_D�r��)�Ic���v<�8�̽�^{B<�� Nf1F7��Ǘ�ׇǟ���F^n��_��+�ڙ,A�!�GU�5z.���!�j���>R�7���FSK�"�mѼ��|Q���oѯ��v~8�W��8�@w��{�v��g�Bvw�� �ن=�:,b[ ^I*
+t.���\�2�����4Ҫ(��Z�=�vVI��cj)+��Х�%�y�NS1#��p���aېY.(�|�1��L�<a�U��E�j��xFS���ó�j��̝�f��)��q��zA��,lEi�1'���$��T�fc��_�9F<�=�->��s��������*�#�{A����`[��X��eh;*�œL��C�>��l���0�z�Y�_Ȭ��E�À���^��[���Ԫ*h�!?���`����HSA� �q�[Kp��${K"�t��l��rG?N��fSaZ��#��u�>�Q�چ�)�����D/=���7T�e߉8�0�I$7!j^����dX`�s���~��QYa�{;q�1�²zV����[�4��)$�N���S�}��rY�=��[�'��� G��l��DR�t���y�bZi
+}#�����T�;���jK?��
+9���u	���ʻ���ȟ&̰.�G-Y���1Z �p�K�2q�]9��t�h7�0'o;l�Ӻ�-��`����I�sm�"�7ȦY��L�!�Ҭ��������7�֋�FQlT �P-��ʥ��>d�N��z`1Ui��
+p;8 �v�j���㦶J�/U�W�'�Q�KK�>�����J��k�3-�Q��D�D��<=o��Ú*���zd�U3p	��݁l�ג�\�+��b3�H���
+�	r)]�
+������Bb7����ܔ�e���z���I�C/=�����u��;�8g��U����>(|*��Ba�-���{Ȩ ��Z��ӰT�|8�{�9�hP'�D��xL4��(��hmUj.��W��'L�E�����]���>_}�NA��9�5��X^]��;[/��n�*�Z��-��� X��,;G�5�/�5��w���G����~��D���?�_��+|�	]</���"T׮/h�蠀BzX�)
+S��G[�
+�~4ٛh�y��Yy�j�{�"ۦ��{0�O�n��·�+a@z��>����(b'ˍ(i��S5ԩj����M��P��MFƝ��	��Z��-��;	�䓴�p�#Y`G�AF�'j&������!D�<��b�Q|ٛGn��y>L���7����a)L����F���͜U�
+h�����i��-�.S�FY�қ���ۑ���;��S�y`�@��v�5E]ĩ5�ň� -8��.C�we��^O����8${�q�,\�Q:W�H0�PB���~���g���C��'�#>�O�9
+┕�A�!lu#._�y�㧮��b��ԉ�ש���ۘ2فA7��?<�t�?���Ϗ:���χ���G��{���u��V�����Yy��
+����tN�Ċ�N!���ǘ���A�)�%h�}ܦ?���&uAg��,3	��l�ԟB@�	炾E(5;��R�%q)Q��2p7��mfc��R�����v�.���Vn��6�7<�u�e�w��A�<4��wa.zJ���刲q��G�G|% X,�k��g�-
+ԗ�1����AKJ�Vz�J����dz���F���J1�1�o��?�����@G��.-�X��S�ה�M�����F�$���$i�f��T�1���ju�5����0
+.�Y�
+
+���>-��m�d��{�ÞR=�r!l��й"�Y� �2�0�Y,�Œ�閁��F#�R�!�&댪מd�U'_�ox<̈�fU���TgI���Q0��2p�e����ʮ�z�*��|�i��k�Ú�rS�)�
+�kxJ��`�]:פg\
+��ň�7��I��Ct�f�'g�X)�
+��)+N�K�2�]>���˞>�y3#�>��d¶{O���/[o��Ҭk���$ij��@��
+��i�vi����_�(�	 A��MH@M���I��!�Q�I:�'" %/��5PeȌ}=��Mԥ,�=O�`Q�[N��Z?j��[�*N����Ŗ�~�]��
+�Z���ܣ�p-8���?�I4��Å�4�(P���U��(���� f���!w>%C6Zn��^Hͦʟ�HV�S�����(�X�J� S p�9}Ah�]]��ps���"��� x̢_֛ U �'��45�Q�
+;�r��,��@��f5���>��`m�Q�N�[�S��2+���� Z��w�Q#il[S�l�*nF�GqjhE7M�Q��d���Gj��aA��Y1e'a.�|��Y��=z�Ma���Q�z^�eN�& �72�Pە�"A�
+a�;T�(:W�H�4v7*�,f�Zq��0<�:�d�گ�:�^Q��
+w�&w���Jּ\0,�vm ]V�	q��uDi!.Ԓ�fԤs
+��5���p|�%c߂`Lg,�T��烧L���L�Q~��V�C�:�o����T��v��lD5:0U�ہUV^��ۉ˭3��
+��LNǊ���dg�		9뼵���ؘ�S�ؓJ�póme����u�As�h$�;�	,���OY�W;y2HAT�"�P�S�����[QM�*�t�����6
+������_-�����br��4iR����EX$�:��3��]��fSz�X2�N�D�Y7dST)6��eD"�C���U�[T�����(qu�<
+E̬��k<���^_w�Vq4�tǌ}	�h��Pu�Go�̌�Χ��d�gӚjuM[N�y	�딟�}�e�]��� �`�ߴ�LV��'Z���� Q�:yS��;�>�U�^����d6���ֻ�My��hl�����X����f�4����75oy'��Y_p��$8N��JV�Dc�"��E6:6!Iլ��S:���3W4Uչ��c6M$'��=��O�϶[�*h�4�O'�d�@��q�?�{��9Y��Fvn�4�c��;wF�<e�lO�$j�.gI�߈�� �f;ҔKX�����Y��ꆙNAľ� ����ڒ��ST���M�����t�>�l��#!�9�͎��`
+h��B�J�28�^��Gr�RK� *`6!~V���Vp���|�g��`u�Xٯw�X��5a�OΎ"Ҧ-��ۏ6�>��ѧ���v Ө�*
+ ꔢ��ÑZ:Ԫf�����_�T�z����)=Q�ϔ��&Q���O`y%=j�
+�W���z���!�9ui�f��;�F:7�m�+�"���R�ˡ�!�k���l�kB��r���!,8L��BՕ�&�=l�W�3I������t�������;	��f���\A�-�����U%:��%�~�]��Yҭݎ�{n�Qһ�\��t�s�⻡KW���q�U��q��B��R���VP$3��ı��3��݇.��Q�?U���k\���\z�r�.Ha�_U_��w_�Y{���2���ޢ=�M��<e4&�mP��p�O��̽�[;w���ф���d������Z�^ܹ�v<誛)���
+�C����|�>O��N?x,+rˊ"�kY���ZX��S�?_3zb�e$kkK����A��z�
+M}�>z�
+W���Z|R΢��3�Hѯ)Z���/�x�� &;j���Wթ�����b8�P,B3YSu1�����h�
+E�Snė�*X�C'7��xY[�)!�*K�����|�lt6"�Nt��]�����<�p�����$V˘j�X�S����o
+��w�B90��&����:M�X퇨pB�u�C�51��jSM��?�2ןM�a��O�J��w�6�z�i��`�y�u6 @�H���M`�F
+�kt$�e�7x�8��y����V�˹�̃��ozl�GR��)�c��G[�B��e�]�I�o8ǒ�Iz����~�C�R�b����#����g���X|Nߝ2�_�q��IoO�QT5�O�u'o|�e�F�݋P�z$�"�8��?��g��o­✽�����{=�MwFϞ�Rh��PZ����u��nJ��!�#���7��~B?��z�,9���X�dt���t<��|ʵ^��p���������خGh�y��G��_L�d�R�����y���d����&yzm�C�n����d��b��]~�?�)��d5:���EU�v:�-��U(�}�� |���^T���'�䨁Ee�]���k3����W�4z���$p�F3u��_Q���Y�I��>Dy�b LJ�--Qp7����M�18���ېn�a��}iL�!W��g2;K
+�� i,�z�=�>;�f��49��Ś�alP�G�A-y3�a/Zw��Sr*���#yR67�dy�e�VK~�R��"� �����<(��VkD�)t���9
+�R���H�#$%a�4GK#��K;3��Ln��{ܓ���W��褧`	��{ʬF�-+��3�!��5|��Y;qV�"��p�
+s��aDM�͕6��Z���T���T]*�yvtWP��7�b�,(ޓE�YW!�j��w��� �}�����{�uQ���(�F�r.���?t1$!��a|��o�����J�n���\��]U;f�(��D11*g��+� �
+#	VCd��t gzA��"��4���FU�E�*>_����"G�YN�-~Z1O���+�:Q<�t���f8�֋9�/���;�yg�-���s��vfa��vf�R��}�m����������=�F�*Nt��o��᫢�"�,I-.�81Nu[�������� ��l�ł����D/L��ϐ�C^K��'YU�7�_�C�8|��d�Z���7����ؠ��ޞ`��ߏ��~�'�թ�̦S4;�@�@
+�9|��L���t��텀v$�DC�0�M^8��bovǾ��	;�٥[� ز��A5��Gw#R~ܰ��"�J�Z���
+�z� �F�޳�DB������/Wh�x���sm���a�$T��ٍ��)h�t=�ك��j˺�Y��J�n�/u!��I�Ð	��l�7���4 s��fPO}@�0�` 9�u���	~��nKt����%ɭH·߼+h!�s
+�h�  Ax|(k9��T�Em��r)����(���}YPP!��m�B�%p���t>��+5px8X<$��9o��w����J���/���&!g��[[��v
+�f ��fH˫��Ų���Y�h ��$x�N�'cP�S��|�x<��ɲڿ���k����Z ��.�kgb��-|�k�CZ]��c���Ksԡ�ћ栕@�$S�Z�$���ŉ/�ǝ]���L�q��Zc
+��PSmg�wt|>�K#2�p��I��1����K��rMTQ|��
+�(1����G�9�t6T�S�q���v?�A�}�<`A�(@R�Z@��tkNP)m%���E���g�1���Կ�[�.�A�_KG��a��ե����E�Q�[ �p�
+�'܌�E짰O)��,\�d0=F%u.p
+��+w��|���¬�V��'���F-�  �!1�s�|�[o0 ��&K��4���}��Tخ�5k}c)5���>�ذ�$U
+j'��nP��Ֆ�[В��]%��=~u����ba
+0s��}��ͥb-Z��U0��J���ÏQ����FK-,���R�n䛐���J>3�tqH�<b<I6�������ER7^;�O�}8��Ya���E�g>AU�	�4�fj�\K�kۣ��A:(p�OM#;�%�q/|8��}ǯP6}�A]�U�U}�)��W��S�W�G�,>�9iu�o���U1�fp��v�2��ʶ�г�z���ͬc��u+	B*���hLJi�{&��YT�n�"�[�P�ں�['X[��i���Sun��f�xF+[u������{E���z��эQX�}[���s�L7B�@�b7ft
+a��	t����@��~�����%hV �P<�	?yMè�k���?�;J������S���.tR�'��3�k���yD�F�v5W��:X����6=���҃�l��x<��S�6�4�����)��OS��:�(�:i܊�J��F1���'\��n]��ټڛMt� 3a��$���zs�}��T���'�P���}�Ix�Ua�7w[Q��M�"�URax�@?��T?t{hSNR?�dW�1����d��%����&'h1�mpX��Ư�^=�o%|��-@�#4�	��ư �h����_�<Td�O�2�/�gy)�]ެm6F�ͭ���<�ޗ�Eu4]���P�@h:ĝ��β� 
+�� |�7���A�C>q�!�\%[r�/�3��XZՠ�`.�ЈM%'5p���m�Ԣ���F�����^���;#�s7�� �Q/n��N�gj ��'`����Q��N1�5/n��t��ڎ E:y��Z<���~?̳�9����[�pu4�y\e&xf�X>�Q}t�=i�p6��A{�Z�l �'M��.{�Z���rBda	������qHqD'�h$w��EF�� w�rr:��j/��qt�q� 躅�X�-\:ԏ/ZF��ߠ�[�Ǯ�V�\�((����
+�䎩&ʨ߉H����~��͋GC�G� ��5�C��+�E�����Y�䓲1l
+���-�f�[O�!���EOi����i0h]��p�f>�T��$u�W�hCO����F1N�YE��(�ԭ~�չ�&�B�E$�ȿ�c�_�:Y\�U9�9�!�	���N���˨/+M'��Q�.�六"c)urM{Q�R
+��r�L��1��Y8J�t�ڜ��uZ�Rqx�>S��9s�ZWcr�[ȱQ^sv��k�1;��5I��ir�(��lgF�]�Q<[RP&�$��� �ņ�µj�����:5�<��񏚤��ֆ{ܼ�f�~f�@?�}E����3�)��/ʁ�_��NAsS@�V"Hx-׼#@��SY͋:_�-�$,��s�#��`^&Hxk@cc��*�k��C
+���6 �(�F�X��E�_Ĭe�9P��%�7\R�4���ԓ�pu��U�����/��7�Q�`��I:�b�S����՝]uW�N���B�k=�P�]��+6ҸH��
+4���-t:����
+����o���|���L* ���ߊ��مO/�Kx�"@��~�+���!�컲����jE�#��Xg��eO: ������p�r�u�;�ړb�A���1(�h��jw�BՋP0!s�$ #B�lW	�M���{h�t2D�$��~���#�;%,��-���u�	�������~���~R�=����,����U��?�� A8+���nRW�kl֐�uv���_��67��d�3:��4dv�`]HaiSI���m5esC���aW�����P&��i�$�䰞;.���CG�g����%���%���f[����tk��F��d<>!OxG��u#_�o�	^gd��i]:�
+	���s����NPY��[��W��
+�ZcW��=�SJȩ�bn������"�8t ���l�!겛l�lu�q�&�V6|��
+]�n��z��-	!���:���&7�{��`?~ ���� �n6k����3��jD��i�1��'聨�0H�$[T7�A���QG�(0�"�c¥h��:�Rr���ͭe�l;u.���P�.&<u�R)�H�f�A�e�I�X�|9����4�(��x&���h�UW?%��!j��A4�����	;ۆ�7D����֬Ղ�\m2o�@�X���nT4t�J}4�1ga��q��>'2�0N��!e0�i���x{i��O���q�1�"�����F���< �Ut�c�\�>h������L�E�&N;�7�S��خ7���B��|?y�:x�$��?�H�c�+��:��iS�,QL
+ ZQ�AӸ�v��� VEUtH�Bk��>
+�����!�=�A�����y�N�.J��ea���'�B�ŬjO(Å�WK��aP�>�q��!�9���茧S$����`3Pp��Ɩ��q4Z�i��1����8D�9GCYs��SP$�N�y�$ĝ�G!)@3J�oQ�d	�1k�zF?ܞ�~�O��eVDnB*a�Z���ů�^S #��v"�F�"�sH�x��^m@�I�w�E�\�)�� Y+T�2�)z�R/����8,�kY��ڟ~���'�ڌ��ƽVs[$&�Az_0�Y�N�7��mF��QY_����c�Pp���.X�f2'啺Q��,��p
+��c�8����+(Ƥ1�>v���<f�В�F��n�;�ot�"����>��S�5b_bH�12��΄���e
+�ku��Q�l5w��|���0�HC.�3�C.M�,H[��{>�#*g��)Y��"��ES�G��k>�bal76w�RX%��c
+��t�Y��^��G�Y0D��y��G�d�ώi��,�48�"�T��z�)����qeϳ��ѳs��ϻ�r,Ky�3��_�
+8��@�����`�F)���I�;�z�on��u���[�O�4�?ѭ{yT�����ѭ\]��~��
+�o�>��I�e�?�4�£[���Ǭ6 �h��m�?uH����
+�S��<W�"/]�d<��i:ѡ�q���/0?}��t�f{����7�E�F�I���s*rH�����@{�����^	^�e��0�q]�5��H���5=�8'�$ϖ[�:Y�C�|F	<69��!��v29AQ����q��t�"�<���h�A�yj��$��|��v��U˼��ݠm��ȋ���0���!
+_?h��{xu�B����|�!z�%�T_$3��u|m�߉9M���>���Hd��_��(�|�A�ɮ�j�x��#�c?�όK�KĹ�DS�x%�l�b�3��7��@,I����0��0�+�D�}-�=��5m�PA+��� ٤|�!�G.&GB�I�&C�8
+����y��y��䷴���v��+b���d��0f�0�x�D����〆��4��
+��I��G"�K����"�#X�:H��$mh$��CrdՆ�	@@=��V��5���Ջ��mQD��k3E���z��3�ۮBD=4���� .`@_˾(
+e�G~2�B�)<�+�Mэ�j	Plq�}�
+?�N��yd���np�y��b�f#R��5��H�����[�_tc�Ym���S�����G}Q�Kr�˨�3� ���<7���y���Z�*��*f[�xl��nM�&���hkj(j/_<��L՟��
+N��_��T�T*����q�Wĕ�	ǎ�Z�����X�/��-���<]k^K<C��Eٙ�L`s9
+�Z&�����o��ԃ1X9���M4�2|�
+��؀21`ވ�`�h%��H�+ć&�kw>l��ʁ��ZKY�x;���
+c�гK�b?E��� ��H�E���a� ���so�x�(�-m�ؗ M� �·�Q�`"���ʢ
+_�X�0����2!l8�J��l� ���#�s���"� ���YTKd
+�Zn�b4���Ȳ�����[��)�n���C��FGH��}΋�@��4��J~�ʢЀ���δ�B��Tq=m��V�f�yy�y��|�"`�`�R���1��n�0ݷ���c��nڥ3��{�2yʅfkѨ����	�<G�;u&Kg8���u�{��X�C-�r��s!&�ߟE\��I�ʦ�f>���5�AU��Z:�^����������>'�ڒ�090��i�����h�!TQ�7��=��6%B�i6��+S=�E�_��1�d	�Ė�ح y]vej�Th���;��{Q�M�n��k?����ۻ!W=pE��v��%l.�u�ԇ���j��М���G�ww�ۛ��$,Mi��x�!���;dA*�����1��jܩ�87�~� |*�N��
+P+�E0��A�#�(����6adӞ,R���h��\s���h�C�s?I#�e�ts���W~!>�w�T&�i c�d������V0�33Q2���Th٨��,j(ㆋ�x��O����-�� �׌�
+���dg��}U/�j5�vտ�{����ڞ+&�CH����WnX��4�ۂ7��ZՐ�l|M_u�C���Z���V�bBLy�(ed�0I�P��%$�E�8���CIA/�,B
+莲�.jK@�l�k��$v?�gS����\�fܓ�����2�}���RgX>���}�\��ME3����h>9!qn��ǌ��vO�����o�g�P�T�q��b�/n��"�o@���<܉�Y�� S��1X'�'g��ƑT��(]�|�H��Y�@��0S�c�F�Svl�a)�� q�;	'3\�s�(��Z�r-R�|�G�T@J��g%<�q혣��"9�~V�kI�)��G��o?E���o�I�J��Qp��vGy�ΝX$��w�[��|��~@��A�8ƦU�<�$���ٛ���/�SꏢG��1�?q#�&
+�^����>��I���HX�n:�Z�İ-�ք],�4�(�93?씩GьAY�wؠ�g�4�6h��~��{���|2�u��!���td�6�s-XB��p	��<�����ΐ���#��FD����l#���@AZN�-I��ұC�jynv-l�u�N�(�� ����I["m�n4K��Ax�:�Y���ݒ���`�&�/ܧH�A�M���;q��6�n�L�>�MC"!Р$���y�k�آ[��#����S��B�ʰc��v��G��^�m�3�`(����}��h˂3� ��״xBt��APq�*�ZC��s�]���ҡ]�	��U�jL4��{�v�L� ��<:�``�;�58�q߾v������2�i�v�I�4�m�Xi��*a����,��q��V��ıX8�C:+#:�P&�0�F�|*O�RZR���-��,d����_�n�6Z�o%o�w���,4���5�ؠkB�5k���i�
+�?O/��Z�q�t�c��SG��5�d��� di�kR�w�:��5��b��p����Ǭ3���`l���lK�s�!���I<-|�VG�s� ��bSB�D���U�˸
+��Է�����i��t����|Iѹ(�/:�eߴ��`�	�
+d�G�=_Mp�S�ܠi"�&��L��G!w��H��!y6sq�a�hJΫ
+�a]����f=�~���7m��%�h�.NS S��(�w��dEƪM�E�B��
+�z��
+�W�Q���q�pH������QcM�uq�LC��K\I9�i�> r.0eW�m�K���"���׉�B�\I���ZrM`hjo�xmp�L6\n݃�)�#|V�\k��	�u2�?P�Hk�-�)������e���׏_�<���f��.8����+��V}:>3�@r����#8�ok�[�Sp��r��)����U'�<АX�@M��L(z`��&�q�(-PL\�;k�w/�)c�h��Z>T
+@��ը١$*����I��
+�]���?�|c[�%�ь��V�p��g�I��D��K��+�},��~��="mEUg�S�|�U�%'I�uO�����I�Q�('tL��Mj_^�ͣ��p�m:R�ZD��*旔Ω4`������%��wːG��"N�#�mJ�U{�vJ~����ό�W�Y��D�g�lۢ��	ӂ�ׯ!�ݾe'у�R�XB!	��,��3�����U��	��P0��k�8��?�Gl�oR��"K1&CƑ0Z3>W�d���!��K-�ٰ����π�38�k��,h���@�0��b�i�ژz6u�tP<�Dǃ�Kzğ:v�}ZrO	�o�ߚˤX�H����p	�)��!��,���n}��]ΰ�1
+nZ������#+^��! A�k�?���2`���\�m!�i2�� � n#�9<g�� ±�'�2V�aR�K�1�-���#�ٱ*ý��LS"�jk���(i%�h��B��u��0��6W
+�z�?2���� ��^�2�V~:>�A�h�>@�?/�T��;�}0q�GN��g.b�����uT_"�7Ϛ�Ϣ��E�][D}�^�6���,m��q��2o�VA���Z��U
+BK_h��_�G�*2=۴U ey:C�X��A����[i;�??[:L���Hgt�\!��z�-�҃hK��F��3�7����29�����LIѯ]�!ZHC�@���4x�g�i�/�+F��lZ��j�:���y�A3Z����w�줢nЌb�]���c���8��V�+���A0� #��5*w0 �!U��F��Q\QuO��q�������'���9O�� .���<���N�0�RRAQ5dRF �&}0�~��a��\�w�M`+�ڃ�%�.�N��%�A%]PQMa�wԭ���go^��<z�|���W��Jo�?ԫ�(�<;�*�G����?�{ �G�xs����s<sp�x^:z�U�ƍ���x������ϟ��<=�JI�Yz�]c:��K�B�@��w4�"6ï+q�s�ʾ?(Ny�t>�!���E"�vn��֋7��t���}uߓy{�����tN_��B���
+I��aF��1T�Qb��,���	Q2g�կ�j//U�o(�&C֠�Be1f3�$N�����-��f�K���l�q�+^�8�a�Om}:���w(�QL�o�J�I5��05�t��M:�&�E"ń�s�Kb]6���.Ub��W�X��[z�߼$�;�� ���#�@?�0�.��e�-V�\���&�����+3��@p��0�����\+���W;��R�}ޜ�KS�-&�j!�JҒ�.P`�jZzV*GW�5-�14P	�\��&i�7)�F�Mm�i2p����|���]���,����k��G ����2� ��7������G�Q����Z��'��;s��O�5m�囀�I��;�͵��h��CH����F�O����X�{�꩸5}Mξ.-?Eq0t��
+������u�y���認
+�T�b7�ؿ>�����9�|�@I��:M���t4��huA�J�t�%��|�#���/��`r�H�҃fr�(�f/?��6�O��m��#���E��A�"�B�h)����&��K*
+�yTw�F^�l9��zy����J�w��s;K+Q�f�	�f����ib%n���D�fU=�9����b��LW"�l�΀H7o�j�̤��c�j��M���<y��ComƊ�Ve�}�������J���d��QW��{�����[;�k4�w�v[;*]c�~�����W�L��o �]�����~�������ٻW2���͐Zk��R��o����^B�Z�_[e�v]F1��aHp���VM}S)�� K8�� 	|��W�?]��W�ԟ������������v��{��
+�������_�������~��>?�|���?�����q����;[�j��w��W����<~����'�/[��?�l�<��1��[߭wz�;������^O��_����;;��N�k�N�n��ڥ����>����>����>����>����>����>����>����>���|�?�  
