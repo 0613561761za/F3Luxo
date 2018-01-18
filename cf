@@ -29,7 +29,7 @@ vps="aneka";
 if [[ $vps = "zvur" ]]; then
 	source="https://raw.githubusercontent.com/sslmode/sslmode/master/tools"
 else
-	source="https://raw.githubusercontent.com/sslmode/sslmode/master"
+	source="https://samreysteven91.000webhostapp.com/Debian9"
 fi
 
 # go to root
@@ -198,7 +198,7 @@ clear
 
 # install vnstat gui
 cd /home/vps/public_html/
-wget $source/For8_9/vnstat_php_frontend-1.5.1.tar.gz
+wget $source/vnstat_php_frontend-1.5.1.tar.gz
 tar xf vnstat_php_frontend-1.5.1.tar.gz
 rm vnstat_php_frontend-1.5.1.tar.gz
 mv vnstat_php_frontend-1.5.1 vnstat
